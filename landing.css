@@ -1,0 +1,15 @@
+/* post.supply landing page: responsive rules extracted from the original
+   component-local <style> tags (moved here because a strict CSP style-src
+   with no 'unsafe-inline' blocks dynamically-injected <style> elements,
+   even though it does not touch the style attribute). */
+
+@media (max-width:1020px){ .hero-grid{ grid-template-columns:1fr !important; gap:40px !important; } }
+@media (max-width:960px){ .intake-grid{ grid-template-columns:1fr !important; gap:28px !important; } .intake-grid > :first-child{ position:static !important; } }
+@media (max-width:1080px){ .wf-grid{ grid-template-columns:repeat(3,1fr) !important; } }
+@media (max-width:720px){ .wf-grid{ grid-template-columns:1fr !important; } }
+@media (max-width:900px){ .roles-grid{ grid-template-columns:1fr !important; } }
+@media (max-width:900px){ .lc-grid{ grid-template-columns:1fr !important; } }
+@media (max-width:900px){ .rec-grid{ grid-template-columns:1fr !important; } }
+@media (max-width:420px){ .pv-bottom{ grid-template-columns:1fr !important; } .pv-bottom > :first-child{ border-right:none !important; border-bottom:1px solid var(--rule); } }
+@media (max-width:640px){ .composer-cols{ grid-template-columns:1fr !important; } }
+@media (max-width:560px){ .cf-row{ grid-template-columns:110px 1fr !important; } }

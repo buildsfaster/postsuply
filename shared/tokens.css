@@ -1,0 +1,48 @@
+/* post.supply design tokens: color, type, spacing.
+   Single source of truth consumed by the landing page, dashboard, and calculator. */
+
+:root {
+  color-scheme: only light;
+
+  --bg:        #F7F4EF;
+  --surface:   #FFFDF8;
+  --surface-2: #EFE9DE;
+  --ink:       #171512;
+  --ink-2:     #5F5A52;
+  --accent:    #C4602A;
+  --rule:      #DDD3C4;
+  --shadow: 0 22px 54px -30px rgba(23,21,18,0.28);
+
+  --f-display: 'Inter Tight', 'Inter', 'Noto Sans SC', 'Noto Sans JP', ui-sans-serif, system-ui, sans-serif;
+  --f-text:    'Inter', 'Noto Sans SC', 'Noto Sans JP', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --f-mono:    'JetBrains Mono', ui-monospace, Menlo, Monaco, monospace;
+  --maxw: 1200px;
+}
+
+[data-theme="dark"] {
+  color-scheme: only dark;
+
+  --bg:        #171512;
+  --surface:   #211E19;
+  --surface-2: #2C2821;
+  --ink:       #F7F4EF;
+  --ink-2:     #B8B0A4;
+  --accent:    #D3703A;
+  --rule:      #3A342C;
+  --shadow: 0 26px 60px -30px rgba(0,0,0,0.6);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: only dark;
+
+    --bg:        #171512;
+    --surface:   #211E19;
+    --surface-2: #2C2821;
+    --ink:       #F7F4EF;
+    --ink-2:     #B8B0A4;
+    --accent:    #D3703A;
+    --rule:      #3A342C;
+    --shadow: 0 26px 60px -30px rgba(0,0,0,0.6);
+  }
+}
