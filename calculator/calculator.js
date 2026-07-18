@@ -1,660 +1,137 @@
-/* post.supply pricing calculator: five material categories feeding one
-   running quote, persisted locally and exportable as a print-ready
-   quote sheet. */
-(function () {
-  "use strict";
+// Post.Supply landed cost calculator.
 
-  var h = React.createElement;
-  var STORAGE_KEY = "ps.calculator.session";
-
-  var CATEGORIES = [
-    {
-      key: "lumber",
-      tabKey: "tabLumber",
-      fields: [
-        { name: "species", labelKey: "fieldSpecies", type: "select", options: ["SPF", "SYP", "Douglas Fir"], default: "SPF" },
-        { name: "grade", labelKey: "fieldGrade", type: "select", options: ["No.1", "No.2", "Stud"], default: "No.1" },
-        { name: "size", labelKey: "fieldSize", type: "select", options: ["2x4", "2x6", "2x8", "2x10", "2x12"], default: "2x6" },
-        { name: "length", labelKey: "fieldLength", type: "number", default: 8 }
-      ],
-      labelFn: function (v) {
-        return v.size + " " + v.species + " " + v.grade + ", " + v.length + "ft";
-      }
-    },
-    {
-      key: "panel",
-      tabKey: "tabPanel",
-      fields: [
-        { name: "type", labelKey: "fieldType", type: "select", options: ["OSB", "Plywood CDX", "Plywood BC"], default: "OSB" },
-        { name: "thickness", labelKey: "fieldThickness", type: "select", options: ["7/16\"", "1/2\"", "5/8\"", "3/4\""], default: "1/2\"" }
-      ],
-      labelFn: function (v) {
-        return v.type + ", " + v.thickness;
-      }
-    },
-    {
-      key: "engineered",
-      tabKey: "tabEngineered",
-      fields: [
-        { name: "type", labelKey: "fieldType", type: "select", options: ["LVL", "I-Joist", "Glulam"], default: "LVL" },
-        { name: "size", labelKey: "fieldSize", type: "text", default: "1-3/4x11-7/8" },
-        { name: "length", labelKey: "fieldLength", type: "number", default: 20 }
-      ],
-      labelFn: function (v) {
-        return v.type + " " + v.size + ", " + v.length + "ft";
-      }
-    },
-    {
-      key: "steel",
-      tabKey: "tabSteel",
-      fields: [
-        { name: "type", labelKey: "fieldType", type: "select", options: ["Track", "Stud"], default: "Stud" },
-        { name: "gauge", labelKey: "fieldGauge", type: "select", options: ["20ga", "18ga"], default: "20ga" },
-        { name: "size", labelKey: "fieldSize", type: "text", default: "3-5/8\"" }
-      ],
-      labelFn: function (v) {
-        return v.type + " " + v.size + ", " + v.gauge;
-      }
-    },
-    {
-      key: "insulation",
-      tabKey: "tabInsulation",
-      fields: [
-        { name: "type", labelKey: "fieldType", type: "select", options: ["Fiberglass Batt", "Rigid Foam", "Mineral Wool"], default: "Fiberglass Batt" },
-        { name: "rvalue", labelKey: "fieldRValue", type: "select", options: ["R-13", "R-19", "R-21", "R-30"], default: "R-13" }
-      ],
-      labelFn: function (v) {
-        return v.type + ", " + v.rvalue;
-      }
-    }
-  ];
-
+(() => {
+  const { useState: useStateC, useEffect: useEffectC } = React;
+  const SESSION_KEY = "ps_landed_v1";
   function defaultSession() {
-    return {
-      activeTab: CATEGORIES[0].key,
-      lines: [],
-      freight: 0,
-      preparedFor: "",
-      quoteRef: null,
-      quoteDate: null
-    };
+    return { lines: [], preparedFor: "", ref: null, date: null };
   }
-
-  var Store = (function () {
-    var state = load();
-    var listeners = [];
-
-    function load() {
-      try {
-        var raw = localStorage.getItem(STORAGE_KEY);
-        return raw ? Object.assign(defaultSession(), JSON.parse(raw)) : defaultSession();
-      } catch (e) {
-        return defaultSession();
-      }
+  function loadSession() {
+    try {
+      const raw = localStorage.getItem(SESSION_KEY);
+      return raw ? Object.assign(defaultSession(), JSON.parse(raw)) : defaultSession();
+    } catch (e) {
+      return defaultSession();
     }
-
+  }
+  const SessionStore = (function() {
+    let state = loadSession();
+    let listeners = [];
     function persist() {
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        localStorage.setItem(SESSION_KEY, JSON.stringify(state));
       } catch (e) {
-        /* storage unavailable, session stays in memory for this tab */
       }
     }
-
-    function notify() {
-      listeners.forEach(function (fn) {
-        fn(state);
-      });
-    }
-
     return {
-      get: function () {
+      get() {
         return state;
       },
-      set: function (patch) {
+      set(patch) {
         state = Object.assign({}, state, patch);
         persist();
-        notify();
+        listeners.forEach((fn) => fn(state));
       },
-      subscribe: function (fn) {
+      subscribe(fn) {
         listeners.push(fn);
-        return function () {
-          listeners = listeners.filter(function (l) {
-            return l !== fn;
-          });
+        return () => {
+          listeners = listeners.filter((l) => l !== fn);
         };
       }
     };
   })();
-
-  function useStoreState() {
-    var s = React.useState(Store.get());
-    var value = s[0];
-    var setValue = s[1];
-    React.useEffect(function () {
-      return Store.subscribe(function (next) {
-        setValue(next);
-      });
-    }, []);
-    return value;
+  function useSessionState() {
+    const [s, setS] = useStateC(SessionStore.get());
+    useEffectC(() => SessionStore.subscribe(setS), []);
+    return s;
   }
-
+  function makeRef() {
+    const d = /* @__PURE__ */ new Date();
+    const stamp = d.getFullYear() + String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0");
+    return "PS-" + stamp + "-" + Math.random().toString(36).slice(2, 6).toUpperCase();
+  }
   function makeLineId() {
-    return "ln_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 6);
+    return "ld_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
   }
-
-  function makeQuoteRef() {
-    var d = new Date();
-    var stamp = d.getFullYear().toString() +
-      String(d.getMonth() + 1).padStart(2, "0") +
-      String(d.getDate()).padStart(2, "0");
-    var suffix = Math.random().toString(36).slice(2, 6).toUpperCase();
-    return "PS-" + stamp + "-" + suffix;
+  function money(n) {
+    return "$" + (Number(n) || 0).toLocaleString();
   }
-
-  function formatMoney(n) {
-    var value = Number(n) || 0;
-    return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  function totalOf(line) {
+    return (Number(line.product) || 0) + (Number(line.freight) || 0) + (Number(line.port) || 0);
   }
-
-  function LangSwitch(props) {
-    return h(
-      "div",
-      { className: "lang-switch", role: "group", "aria-label": "Language" },
-      PS.SUPPORTED_LOCALES.map(function (code) {
-        return h(
-          "button",
-          {
-            key: code,
-            type: "button",
-            className: "lang-switch__btn",
-            "aria-pressed": props.locale === code,
-            onClick: function () {
-              props.onChange(code);
-            }
-          },
-          code.toUpperCase()
-        );
-      })
-    );
-  }
-
-  function fieldDefaults(category) {
-    var values = {};
-    category.fields.forEach(function (f) {
-      values[f.name] = f.default;
-    });
-    values.quantity = 1;
-    values.unitPrice = "";
-    return values;
-  }
-
-  function CategoryForm(props) {
-    var category = props.category;
-    var t = props.t;
-    var valuesState = React.useState(fieldDefaults(category));
-    var values = valuesState[0];
-    var setValues = valuesState[1];
-
-    React.useEffect(function () {
-      setValues(fieldDefaults(category));
-    }, [category.key]);
-
-    function update(name) {
-      return function (evt) {
-        var val = evt.target.value;
-        setValues(function (prev) {
-          var next = Object.assign({}, prev);
-          next[name] = val;
-          return next;
-        });
+  function QuoteForm({ t, onAdd }) {
+    const empty = { supplier: "", product: "", freight: "", port: "", lead: "", nc: false };
+    const [f, setF] = useStateC(empty);
+    function up(k) {
+      return (e) => {
+        const v = k === "nc" ? e.target.checked : e.target.value;
+        setF((s) => Object.assign({}, s, { [k]: v }));
       };
     }
-
-    function handleSubmit(evt) {
-      evt.preventDefault();
-      var qty = Number(values.quantity);
-      var unitPrice = Number(values.unitPrice);
-      if (!(qty > 0) || !(unitPrice >= 0) || values.unitPrice === "") {
-        return;
-      }
-      var label = category.labelFn(values);
-      props.onAddLine({
-        id: makeLineId(),
-        categoryKey: category.key,
-        label: label,
-        qty: qty,
-        unitPrice: unitPrice,
-        lineTotal: qty * unitPrice
-      });
-      setValues(fieldDefaults(category));
+    function submit(e) {
+      e.preventDefault();
+      if (!f.supplier.trim()) return;
+      if (!f.nc && (f.product === "" || f.freight === "" || f.port === "" || f.lead === "")) return;
+      onAdd(Object.assign({ id: makeLineId() }, f));
+      setF(empty);
     }
-
-    return h(
-      "form",
-      { className: "calc-form panel", onSubmit: handleSubmit },
-      h(
-        "div",
-        { className: "calc-form__grid" },
-        category.fields.map(function (f) {
-          return h(
-            "div",
-            { className: "field", key: f.name },
-            h("label", { htmlFor: "cf-" + f.name }, t("calculator." + f.labelKey)),
-            f.type === "select"
-              ? h(
-                  "select",
-                  { id: "cf-" + f.name, value: values[f.name], onChange: update(f.name) },
-                  f.options.map(function (opt) {
-                    return h("option", { key: opt, value: opt }, opt);
-                  })
-                )
-              : h("input", {
-                  id: "cf-" + f.name,
-                  type: f.type,
-                  value: values[f.name],
-                  onChange: update(f.name)
-                })
-          );
-        }),
-        h(
-          "div",
-          { className: "field" },
-          h("label", { htmlFor: "cf-quantity" }, t("calculator.fieldQuantity")),
-          h("input", {
-            id: "cf-quantity",
-            type: "number",
-            min: "1",
-            step: "1",
-            value: values.quantity,
-            onChange: update("quantity")
-          })
-        ),
-        h(
-          "div",
-          { className: "field" },
-          h("label", { htmlFor: "cf-unitPrice" }, t("calculator.fieldUnitPrice")),
-          h("input", {
-            id: "cf-unitPrice",
-            type: "number",
-            min: "0",
-            step: "0.01",
-            value: values.unitPrice,
-            onChange: update("unitPrice")
-          })
-        )
-      ),
-      h("button", { type: "submit", className: "btn" }, t("calculator.actionAddLine"))
-    );
+    return /* @__PURE__ */ React.createElement("form", { className: "surface calc-form", onSubmit: submit }, /* @__PURE__ */ React.createElement("div", { className: "calc-form__grid" }, /* @__PURE__ */ React.createElement("div", { className: "field" }, /* @__PURE__ */ React.createElement("label", null, t.calc_field_supplier), /* @__PURE__ */ React.createElement("input", { value: f.supplier, onChange: up("supplier"), required: true })), !f.nc && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "field" }, /* @__PURE__ */ React.createElement("label", null, t.calc_field_product), /* @__PURE__ */ React.createElement("input", { type: "number", min: "0", step: "0.01", value: f.product, onChange: up("product") })), /* @__PURE__ */ React.createElement("div", { className: "field" }, /* @__PURE__ */ React.createElement("label", null, t.calc_field_freight), /* @__PURE__ */ React.createElement("input", { type: "number", min: "0", step: "0.01", value: f.freight, onChange: up("freight") })), /* @__PURE__ */ React.createElement("div", { className: "field" }, /* @__PURE__ */ React.createElement("label", null, t.calc_field_port), /* @__PURE__ */ React.createElement("input", { type: "number", min: "0", step: "0.01", value: f.port, onChange: up("port") })), /* @__PURE__ */ React.createElement("div", { className: "field" }, /* @__PURE__ */ React.createElement("label", null, t.calc_field_lead), /* @__PURE__ */ React.createElement("input", { type: "number", min: "0", step: "1", value: f.lead, onChange: up("lead") })))), /* @__PURE__ */ React.createElement("label", { className: "calc-nc-toggle" }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", checked: f.nc, onChange: up("nc") }), " ", t.calc_field_nc), /* @__PURE__ */ React.createElement("button", { type: "submit", className: "btn btn-accent" }, t.calc_action_add));
   }
-
-  function QuotePanel(props) {
-    var t = props.t;
-    var locale = props.locale;
-    var session = props.session;
-    var lines = session.lines;
-    var subtotal = lines.reduce(function (sum, l) {
-      return sum + l.lineTotal;
-    }, 0);
-    var freight = Number(session.freight) || 0;
-    var total = subtotal + freight;
-
-    return h(
-      "div",
-      { className: "quote-panel panel" },
-      h("h2", { className: "quote-panel__title" }, t("calculator.quoteTitle")),
-      h(
-        "div",
-        { className: "quote-meta" },
-        h(
-          "div",
-          { className: "field" },
-          h("label", null, t("calculator.quoteRef")),
-          h("span", { className: "mono" }, session.quoteRef || "-")
-        ),
-        h(
-          "div",
-          { className: "field" },
-          h("label", null, t("calculator.quoteDate")),
-          h(
-            "span",
-            { className: "mono" },
-            session.quoteDate ? new Date(session.quoteDate).toLocaleDateString(locale) : "-"
-          )
-        ),
-        h(
-          "div",
-          { className: "field quote-meta__full" },
-          h("label", { htmlFor: "prepared-for" }, t("calculator.quotePreparedFor")),
-          h("input", {
-            id: "prepared-for",
-            type: "text",
-            placeholder: t("calculator.quotePreparedForPlaceholder"),
-            value: session.preparedFor,
-            onChange: function (evt) {
-              Store.set({ preparedFor: evt.target.value });
-            }
-          })
-        )
-      ),
-      lines.length === 0
-        ? h("p", { className: "quote-empty" }, t("calculator.quoteEmpty"))
-        : h(
-            "table",
-            { className: "quote-table" },
-            h(
-              "thead",
-              null,
-              h(
-                "tr",
-                null,
-                h("th", null, t("calculator.quoteColItem")),
-                h("th", { className: "mono" }, t("calculator.quoteColQty")),
-                h("th", { className: "mono" }, t("calculator.quoteColUnitPrice")),
-                h("th", { className: "mono" }, t("calculator.quoteColTotal")),
-                h("th", null)
-              )
-            ),
-            h(
-              "tbody",
-              null,
-              lines.map(function (line) {
-                return h(
-                  "tr",
-                  { key: line.id },
-                  h("td", null, line.label),
-                  h("td", { className: "mono" }, line.qty),
-                  h("td", { className: "mono" }, formatMoney(line.unitPrice)),
-                  h("td", { className: "mono" }, formatMoney(line.lineTotal)),
-                  h(
-                    "td",
-                    null,
-                    h(
-                      "button",
-                      {
-                        type: "button",
-                        className: "quote-remove",
-                        onClick: function () {
-                          props.onRemoveLine(line.id);
-                        }
-                      },
-                      t("calculator.quoteRemove")
-                    )
-                  )
-                );
-              })
-            )
-          ),
-      h(
-        "div",
-        { className: "quote-totals" },
-        h(
-          "div",
-          { className: "quote-totals__row" },
-          h("span", null, t("calculator.quoteSubtotal")),
-          h("span", { className: "mono" }, formatMoney(subtotal))
-        ),
-        h(
-          "div",
-          { className: "quote-totals__row quote-totals__row--freight" },
-          h("label", { htmlFor: "freight-input" }, t("calculator.quoteFreight")),
-          h("input", {
-            id: "freight-input",
-            type: "number",
-            min: "0",
-            step: "0.01",
-            value: session.freight,
-            onChange: function (evt) {
-              Store.set({ freight: evt.target.value });
-            }
-          })
-        ),
-        h(
-          "div",
-          { className: "quote-totals__row quote-totals__row--total" },
-          h("span", null, t("calculator.quoteTotal")),
-          h("span", { className: "mono" }, formatMoney(total))
-        )
-      ),
-      h(
-        "div",
-        { className: "quote-actions" },
-        h(
-          "button",
-          {
-            type: "button",
-            className: "btn btn--ghost",
-            disabled: lines.length === 0,
-            onClick: props.onClear
-          },
-          t("calculator.quoteClear")
-        ),
-        h(
-          "button",
-          {
-            type: "button",
-            className: "btn",
-            disabled: lines.length === 0,
-            onClick: function () {
-              window.print();
-            }
-          },
-          t("calculator.quotePrint")
-        )
-      ),
-      lines.length > 0 ? h("p", { className: "quote-saved-note" }, t("calculator.savedNote")) : null
-    );
+  function QuoteCard({ t, line, best, onRemove }) {
+    return /* @__PURE__ */ React.createElement("div", { className: "surface lc-card", "data-best": best ? "true" : "false" }, /* @__PURE__ */ React.createElement("div", { className: "lc-card__head" }, /* @__PURE__ */ React.createElement("span", { className: "lc-card__name" }, line.supplier), best && /* @__PURE__ */ React.createElement("span", { className: "chip lc-card__badge" }, t.lc_best)), line.nc ? /* @__PURE__ */ React.createElement("div", { className: "lc-card__nc" }, /* @__PURE__ */ React.createElement("span", null, t.lc_missing), /* @__PURE__ */ React.createElement("span", { className: "mono" }, t.lc_nc)) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "lc-card__rows" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", null, t.lc_product), /* @__PURE__ */ React.createElement("span", { className: "mono" }, money(line.product))), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", null, t.lc_freight), /* @__PURE__ */ React.createElement("span", { className: "mono" }, money(line.freight))), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", null, t.lc_port), /* @__PURE__ */ React.createElement("span", { className: "mono" }, money(line.port))), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", null, t.lc_lead), /* @__PURE__ */ React.createElement("span", { className: "mono" }, line.lead, " ", t.lc_days))), /* @__PURE__ */ React.createElement("div", { className: "lc-card__total" }, /* @__PURE__ */ React.createElement("span", null, t.lc_total), /* @__PURE__ */ React.createElement("span", { className: "mono" }, money(totalOf(line))))), /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-ghost lc-card__remove", onClick: () => onRemove(line.id) }, t.calc_remove));
   }
-
   function App() {
-    var localeState = React.useState(PS.getLocale());
-    var locale = localeState[0];
-    var setLocale = localeState[1];
-    var session = useStoreState();
-
-    function t(path, vars) {
-      return PS.t(locale, path, vars);
-    }
-
-    React.useEffect(function () {
-      document.documentElement.lang = locale;
-      document.title = t("common.brand") + " · " + t("calculator.title");
-    }, [locale]);
-
-    function changeLocale(code) {
-      PS.setLocale(code);
-      setLocale(code);
-    }
-
-    function onAddLine(line) {
-      var patch = { lines: session.lines.concat([line]) };
-      if (!session.quoteRef) {
-        patch.quoteRef = makeQuoteRef();
-        patch.quoteDate = Date.now();
+    const [theme, setTheme] = useStateC(initTheme);
+    const [lang, setLang] = useStateC(initLang);
+    const t = PS_T[lang] || PS_T.en;
+    const session = useSessionState();
+    useEffectC(() => {
+      document.documentElement.setAttribute("data-theme", theme);
+      document.documentElement.style.colorScheme = theme;
+      try {
+        localStorage.setItem("ps3_theme", theme);
+      } catch (e) {
       }
-      Store.set(patch);
+    }, [theme]);
+    useEffectC(() => {
+      document.documentElement.setAttribute("lang", lang);
+      try {
+        localStorage.setItem("ps3_lang", lang);
+      } catch (e) {
+      }
+      window.dispatchEvent(new CustomEvent("ps:langchange", { detail: lang }));
+    }, [lang]);
+    function onAdd(line) {
+      const patch = { lines: session.lines.concat([line]) };
+      if (!session.ref) {
+        patch.ref = makeRef();
+        patch.date = Date.now();
+      }
+      SessionStore.set(patch);
     }
-
-    function onRemoveLine(id) {
-      Store.set({ lines: session.lines.filter(function (l) { return l.id !== id; }) });
+    function onRemove(id) {
+      SessionStore.set({ lines: session.lines.filter((l) => l.id !== id) });
     }
-
     function onClear() {
-      if (window.confirm(t("dashboard.actionDeleteConfirm"))) {
-        Store.set(defaultSession());
-      }
+      if (window.confirm(t.dash_action_delete_confirm)) SessionStore.set(defaultSession());
     }
-
-    var activeCategory = CATEGORIES.filter(function (c) {
-      return c.key === session.activeTab;
-    })[0] || CATEGORIES[0];
-
-    return h(
-      React.Fragment,
-      null,
-      h(
-        "header",
-        { className: "container" },
-        h(
-          "div",
-          { className: "desk-bar" },
-          h("a", { className: "desk-bar__brand", href: "../" }, t("common.brand")),
-          h(
-            "nav",
-            { className: "desk-bar__nav" },
-            h(LangSwitch, { locale: locale, onChange: changeLocale })
-          )
-        )
-      ),
-      h(
-        "main",
-        { className: "container calc-main" },
-        h(
-          "div",
-          { className: "calc-header" },
-          h("h1", null, t("calculator.title")),
-          h("p", null, t("calculator.subtitle"))
-        ),
-        h(
-          "div",
-          { className: "calc-layout" },
-          h(
-            "div",
-            null,
-            h(
-              "div",
-              { className: "calc-tabs", role: "tablist" },
-              CATEGORIES.map(function (c) {
-                return h(
-                  "button",
-                  {
-                    key: c.key,
-                    type: "button",
-                    className: "calc-tab",
-                    role: "tab",
-                    "aria-selected": c.key === session.activeTab,
-                    onClick: function () {
-                      Store.set({ activeTab: c.key });
-                    }
-                  },
-                  t("calculator." + c.tabKey)
-                );
-              })
-            ),
-            h(CategoryForm, { category: activeCategory, t: t, onAddLine: onAddLine })
-          ),
-          h(QuotePanel, {
-            t: t,
-            locale: locale,
-            session: session,
-            onRemoveLine: onRemoveLine,
-            onClear: onClear
-          })
-        )
-      ),
-      h(
-        "footer",
-        { className: "desk-footer container" },
-        h("p", null, t("common.footer"))
-      )
-    );
+    const comparable = session.lines.filter((l) => !l.nc);
+    const bestId = comparable.length ? comparable.reduce((a, b) => totalOf(b) < totalOf(a) ? b : a).id : null;
+    return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "wrap top-bar" }, /* @__PURE__ */ React.createElement("a", { href: "../", style: { textDecoration: "none" } }, /* @__PURE__ */ React.createElement(Wordmark, { size: 20 })), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10 } }, /* @__PURE__ */ React.createElement(ModeToggle, { theme, setTheme }), /* @__PURE__ */ React.createElement(LangMenu, { lang, setLang }))), /* @__PURE__ */ React.createElement("main", { className: "wrap page-main" }, /* @__PURE__ */ React.createElement("h1", { style: { fontSize: "clamp(28px,3.2vw,40px)" } }, t.calc_title), /* @__PURE__ */ React.createElement("p", { style: { marginTop: 10, fontSize: 17, maxWidth: "56ch" } }, t.calc_subtitle), /* @__PURE__ */ React.createElement("div", { className: "calc-meta" }, /* @__PURE__ */ React.createElement("div", { className: "field" }, /* @__PURE__ */ React.createElement("label", null, t.calc_ref), /* @__PURE__ */ React.createElement("span", { className: "mono" }, session.ref || "-")), /* @__PURE__ */ React.createElement("div", { className: "field" }, /* @__PURE__ */ React.createElement("label", null, t.calc_date), /* @__PURE__ */ React.createElement("span", { className: "mono" }, session.date ? new Date(session.date).toLocaleDateString(lang) : "-")), /* @__PURE__ */ React.createElement("div", { className: "field calc-meta__full" }, /* @__PURE__ */ React.createElement("label", { htmlFor: "prepared-for" }, t.calc_prepared_for), /* @__PURE__ */ React.createElement("input", { id: "prepared-for", type: "text", placeholder: t.calc_prepared_for_ph, value: session.preparedFor, onChange: (e) => SessionStore.set({ preparedFor: e.target.value }) }))), /* @__PURE__ */ React.createElement(QuoteForm, { t, onAdd }), session.lines.length === 0 ? /* @__PURE__ */ React.createElement("p", { className: "calc-empty" }, t.calc_empty) : /* @__PURE__ */ React.createElement("div", { className: "lc-grid" }, session.lines.map((line) => /* @__PURE__ */ React.createElement(QuoteCard, { key: line.id, t, line, best: line.id === bestId, onRemove }))), /* @__PURE__ */ React.createElement("div", { className: "calc-actions" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-ghost", disabled: session.lines.length === 0, onClick: onClear }, t.calc_clear), /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-accent", disabled: session.lines.length === 0, onClick: () => window.print() }, t.calc_print)), session.lines.length > 0 && /* @__PURE__ */ React.createElement("p", { className: "calc-saved-note" }, t.calc_saved_note)), /* @__PURE__ */ React.createElement("footer", { style: { borderTop: "1px solid var(--rule)", padding: "38px 0 46px" } }, /* @__PURE__ */ React.createElement("div", { className: "wrap", style: { fontSize: 15, color: "var(--ink-2)" } }, /* @__PURE__ */ React.createElement(Wordmark, { size: 16 }), " ", /* @__PURE__ */ React.createElement("span", { style: { marginLeft: 12 } }, "\xA9 2026 \xB7 ", t.foot_corridors))));
   }
-
   function PrintSheet() {
-    var localeState = React.useState(PS.getLocale());
-    var locale = localeState[0];
-    var session = useStoreState();
-
-    function t(path, vars) {
-      return PS.t(locale, path, vars);
-    }
-
-    var subtotal = session.lines.reduce(function (sum, l) {
-      return sum + l.lineTotal;
-    }, 0);
-    var freight = Number(session.freight) || 0;
-    var total = subtotal + freight;
-
-    return h(
-      "div",
-      null,
-      h("div", { className: "print-brand" }, t("common.brand")),
-      h(
-        "div",
-        { className: "print-meta" },
-        h(
-          "span",
-          null,
-          t("calculator.quoteRef") + ": " + (session.quoteRef || "-")
-        ),
-        h(
-          "span",
-          null,
-          t("calculator.quoteDate") + ": " + (session.quoteDate ? new Date(session.quoteDate).toLocaleDateString(locale) : "-")
-        ),
-        session.preparedFor
-          ? h("span", null, t("calculator.quotePreparedFor") + ": " + session.preparedFor)
-          : null
-      ),
-      h(
-        "table",
-        null,
-        h(
-          "thead",
-          null,
-          h(
-            "tr",
-            null,
-            h("th", null, t("calculator.quoteColItem")),
-            h("th", { className: "mono" }, t("calculator.quoteColQty")),
-            h("th", { className: "mono" }, t("calculator.quoteColUnitPrice")),
-            h("th", { className: "mono" }, t("calculator.quoteColTotal"))
-          )
-        ),
-        h(
-          "tbody",
-          null,
-          session.lines.map(function (line) {
-            return h(
-              "tr",
-              { key: line.id },
-              h("td", null, line.label),
-              h("td", { className: "mono" }, line.qty),
-              h("td", { className: "mono" }, formatMoney(line.unitPrice)),
-              h("td", { className: "mono" }, formatMoney(line.lineTotal))
-            );
-          })
-        )
-      ),
-      h(
-        "div",
-        { className: "print-totals" },
-        h(
-          "div",
-          { className: "print-totals__row" },
-          h("span", null, t("calculator.quoteSubtotal")),
-          h("span", null, formatMoney(subtotal))
-        ),
-        h(
-          "div",
-          { className: "print-totals__row" },
-          h("span", null, t("calculator.quoteFreight")),
-          h("span", null, formatMoney(freight))
-        ),
-        h(
-          "div",
-          { className: "print-totals__row print-totals__row--total" },
-          h("span", null, t("calculator.quoteTotal")),
-          h("span", null, formatMoney(total))
-        )
-      ),
-      h("div", { className: "print-footer" }, t("common.footer"))
-    );
+    const [lang, setLang] = useStateC(initLang);
+    useEffectC(() => {
+      const onLang = (e) => setLang(e.detail);
+      window.addEventListener("ps:langchange", onLang);
+      return () => window.removeEventListener("ps:langchange", onLang);
+    }, []);
+    const t = PS_T[lang] || PS_T.en;
+    const session = useSessionState();
+    const comparable = session.lines.filter((l) => !l.nc);
+    const bestId = comparable.length ? comparable.reduce((a, b) => totalOf(b) < totalOf(a) ? b : a).id : null;
+    return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "print-brand" }, "Post.Supply"), /* @__PURE__ */ React.createElement("div", { className: "print-meta" }, /* @__PURE__ */ React.createElement("span", null, t.calc_ref, ": ", session.ref || "-"), /* @__PURE__ */ React.createElement("span", null, t.calc_date, ": ", session.date ? new Date(session.date).toLocaleDateString(lang) : "-"), session.preparedFor && /* @__PURE__ */ React.createElement("span", null, t.calc_prepared_for, ": ", session.preparedFor)), /* @__PURE__ */ React.createElement("table", null, /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, t.calc_field_supplier), /* @__PURE__ */ React.createElement("th", { className: "mono" }, t.lc_product), /* @__PURE__ */ React.createElement("th", { className: "mono" }, t.lc_freight), /* @__PURE__ */ React.createElement("th", { className: "mono" }, t.lc_port), /* @__PURE__ */ React.createElement("th", { className: "mono" }, t.lc_lead), /* @__PURE__ */ React.createElement("th", { className: "mono" }, t.lc_total))), /* @__PURE__ */ React.createElement("tbody", null, session.lines.map((l) => /* @__PURE__ */ React.createElement("tr", { key: l.id }, /* @__PURE__ */ React.createElement("td", null, l.supplier, l.id === bestId ? " \u2605" : ""), l.nc ? /* @__PURE__ */ React.createElement("td", { colSpan: 5 }, t.lc_missing, ": ", t.lc_nc) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("td", { className: "mono" }, money(l.product)), /* @__PURE__ */ React.createElement("td", { className: "mono" }, money(l.freight)), /* @__PURE__ */ React.createElement("td", { className: "mono" }, money(l.port)), /* @__PURE__ */ React.createElement("td", { className: "mono" }, l.lead, " ", t.lc_days), /* @__PURE__ */ React.createElement("td", { className: "mono" }, money(totalOf(l)))))))), /* @__PURE__ */ React.createElement("div", { className: "print-footer" }, "Post.Supply \xB7 ", t.foot_corridors));
   }
-
-  var appRoot = ReactDOM.createRoot(document.getElementById("app-shell"));
-  appRoot.render(h(App));
-
-  var printRoot = ReactDOM.createRoot(document.getElementById("print-sheet"));
-  printRoot.render(h(PrintSheet));
+  ReactDOM.createRoot(document.getElementById("app-shell")).render(/* @__PURE__ */ React.createElement(App, null));
+  ReactDOM.createRoot(document.getElementById("print-sheet")).render(/* @__PURE__ */ React.createElement(PrintSheet, null));
 })();
