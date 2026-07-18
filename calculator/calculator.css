@@ -1,0 +1,182 @@
+/* post.supply pricing calculator: trading terminal layout on top of shared tokens/base. */
+
+.calc-main {
+  padding: var(--space-6) 0 var(--space-8);
+}
+
+.calc-header {
+  margin-bottom: var(--space-6);
+}
+
+.calc-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.calc-tabs {
+  display: flex;
+  gap: var(--space-1);
+  border-bottom: var(--border-width) solid var(--border);
+  margin-bottom: var(--space-5);
+  overflow-x: auto;
+}
+
+.calc-tab {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+  color: var(--text-muted);
+}
+
+.calc-tab[aria-selected="true"] {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.calc-form {
+  padding: var(--space-5);
+}
+
+.calc-form__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-2);
+}
+
+.calc-form__grid .field {
+  margin-bottom: 0;
+}
+
+.quote-panel {
+  padding: var(--space-5);
+  position: sticky;
+  top: var(--space-5);
+}
+
+.quote-panel__title {
+  font-size: var(--text-lg);
+  margin-bottom: var(--space-1);
+}
+
+.quote-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  font-size: var(--text-xs);
+}
+
+.quote-meta .field {
+  margin-bottom: 0;
+}
+
+.quote-meta__full {
+  grid-column: 1 / -1;
+}
+
+.quote-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-4);
+}
+
+.quote-table th {
+  text-align: left;
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  border-bottom: var(--border-width) solid var(--border-strong);
+  padding: var(--space-2);
+}
+
+.quote-table td {
+  padding: var(--space-2);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.quote-table td.mono {
+  text-align: right;
+}
+
+.quote-empty {
+  color: var(--text-faint);
+  font-size: var(--text-sm);
+  padding: var(--space-4) 0;
+}
+
+.quote-remove {
+  background: transparent;
+  border: none;
+  color: var(--text-faint);
+  font-size: var(--text-xs);
+}
+
+.quote-totals {
+  border-top: var(--border-width) solid var(--border-strong);
+  padding-top: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.quote-totals__row {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-sm);
+  padding: var(--space-1) 0;
+}
+
+.quote-totals__row--freight input {
+  width: 8rem;
+  text-align: right;
+  padding: var(--space-1) var(--space-2);
+}
+
+.quote-totals__row--total {
+  font-size: var(--text-md);
+  font-family: var(--font-mono);
+  padding-top: var(--space-2);
+}
+
+.quote-actions {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.quote-saved-note {
+  font-size: var(--text-xs);
+  color: var(--text-faint);
+  margin-top: var(--space-3);
+}
+
+#print-sheet {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .calc-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .quote-panel {
+    position: static;
+  }
+}
+
+@media (max-width: 480px) {
+  .calc-form {
+    padding: var(--space-4);
+  }
+
+  .quote-meta {
+    grid-template-columns: 1fr;
+  }
+}
