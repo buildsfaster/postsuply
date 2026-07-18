@@ -20,6 +20,34 @@
   function FieldV3({ label, children }) {
     return /* @__PURE__ */ React.createElement("div", { style: { minWidth: 0 } }, /* @__PURE__ */ React.createElement("label", { style: lbl }, label), children);
   }
+  function rfqRows(t, role, lead) {
+    const rows = [];
+    const bodyLabel = role === "buyer" ? t.s_request : role === "supplier" ? t.s_products : t.s_handles;
+    const body = lead.request || lead.sells || lead.categories;
+    if (body) rows.push([bodyLabel, body]);
+    [["destination", t.f_destination], ["quantity", t.f_quantity], ["origin", t.f_origin], ["markets", t.f_markets], ["territory", t.f_territory], ["brings", t.f_brings]].forEach(([k, label]) => {
+      if (lead[k]) rows.push([label, lead[k]]);
+    });
+    const method = lead.method || "whatsapp";
+    const methodLabel = method === "call" ? t.m_call : method === "sms" ? "SMS" : method === "email" ? "Email" : "WhatsApp";
+    rows.push([t.s_contact, method === "email" ? `Email \xB7 ${lead.email}` : `${methodLabel} \xB7 ${lead.country || "+1"} ${lead.phone}`]);
+    if (lead.attach) rows.push([t.s_attachment, t.s_attach_note]);
+    return rows;
+  }
+  function buildWhatsAppUrl(t, role, lead) {
+    const number = (PS_CONFIG.whatsappNumber || "").replace(/[^0-9]/g, "");
+    const lines = ["Post.Supply RFQ"].concat(rfqRows(t, role, lead).map((r) => r[0] + ": " + r[1]));
+    return "https://wa.me/" + number + "?text=" + encodeURIComponent(lines.join("\n"));
+  }
+  function sendFormspreeFallback(role, lead) {
+    if (!PS_CONFIG.formspreeId) return;
+    fetch("https://formspree.io/f/" + PS_CONFIG.formspreeId, {
+      method: "POST",
+      headers: { "Accept": "application/json", "Content-Type": "application/json" },
+      body: JSON.stringify(Object.assign({ role }, lead))
+    }).catch(function() {
+    });
+  }
   function useRotatingPlaceholder(examples, active) {
     const [i, setI] = useStateI(0);
     useEffectI(() => {
@@ -76,7 +104,10 @@
         return;
       }
       setSending(true);
-      const lead = saveLead(Object.assign({ role, attach }, f));
+      const record = Object.assign({ role, attach }, f);
+      const lead = saveLead(record);
+      sendFormspreeFallback(role, record);
+      window.open(buildWhatsAppUrl(t, role, record), "_blank", "noopener,noreferrer");
       track("rfq_submitted", role);
       setTimeout(() => {
         setSending(false);
@@ -190,17 +221,7 @@
   function ComposerDone({ t, role, lead, onReset }) {
     const title = role === "buyer" ? t.cf_buyer : role === "supplier" ? t.cf_supplier : t.cf_network;
     const next = role === "buyer" ? t.next_buyer : role === "supplier" ? t.next_supplier : t.next_network;
-    const rows = [];
-    const bodyLabel = role === "buyer" ? t.s_request : role === "supplier" ? t.s_products : t.s_handles;
-    const body = lead.request || lead.sells || lead.categories;
-    if (body) rows.push([bodyLabel, body]);
-    [["destination", t.f_destination], ["quantity", t.f_quantity], ["origin", t.f_origin], ["markets", t.f_markets], ["territory", t.f_territory], ["brings", t.f_brings]].forEach(([k, label]) => {
-      if (lead[k]) rows.push([label, lead[k]]);
-    });
-    const method = lead.method || "whatsapp";
-    const methodLabel = method === "call" ? t.m_call : method === "sms" ? "SMS" : method === "email" ? "Email" : "WhatsApp";
-    rows.push([t.s_contact, method === "email" ? `Email \xB7 ${lead.email}` : `${methodLabel} \xB7 ${lead.country || "+1"} ${lead.phone}`]);
-    if (lead.attach) rows.push([t.s_attachment, t.s_attach_note]);
+    const rows = rfqRows(t, role, lead);
     return /* @__PURE__ */ React.createElement("div", { className: "surface", id: "rfq", style: { border: "1px solid var(--rule)", borderRadius: 20, background: "var(--surface)", boxShadow: "var(--shadow)", padding: 26 } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "flex-start", gap: 15, marginBottom: 20 } }, /* @__PURE__ */ React.createElement("div", { style: { width: 42, height: 42, borderRadius: 999, background: "var(--accent)", color: "#FFFDF8", display: "grid", placeItems: "center", flex: "0 0 auto" } }, /* @__PURE__ */ React.createElement(Check, { s: 18 })), /* @__PURE__ */ React.createElement("div", { style: { minWidth: 0 } }, /* @__PURE__ */ React.createElement("div", { style: { fontFamily: "var(--f-display)", fontSize: 22, letterSpacing: "-0.02em", lineHeight: 1.25, color: "var(--ink)" } }, title), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 15.5, marginTop: 5 } }, t.cf_person)), /* @__PURE__ */ React.createElement("div", { style: { marginLeft: "auto" } }, /* @__PURE__ */ React.createElement(Stamp, { size: 36 }))), /* @__PURE__ */ React.createElement("div", { style: { border: "1px solid var(--rule)", borderRadius: 12, overflow: "hidden" } }, rows.map((r, i) => /* @__PURE__ */ React.createElement("div", { key: i, className: "cf-row", style: { display: "grid", gridTemplateColumns: "150px 1fr", borderTop: i ? "1px solid var(--rule)" : "none" } }, /* @__PURE__ */ React.createElement("div", { style: { padding: "11px 14px", background: "var(--surface-2)", color: "var(--ink-2)", fontSize: 14, fontWeight: 500 } }, r[0]), /* @__PURE__ */ React.createElement("div", { style: { padding: "11px 14px", fontSize: 15.5, color: "var(--ink)" } }, r[1])))), /* @__PURE__ */ React.createElement("div", { style: { marginTop: 18 } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 15, fontWeight: 500, color: "var(--ink)", marginBottom: 9 } }, t.cf_next), /* @__PURE__ */ React.createElement("ol", { style: { margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 7 } }, next.map((s, i) => /* @__PURE__ */ React.createElement("li", { key: i, style: { display: "flex", gap: 11, fontSize: 15.5, color: "var(--ink-2)" } }, /* @__PURE__ */ React.createElement("span", { style: { fontFamily: "var(--f-mono)", fontSize: 12.5, color: "var(--accent)", width: 22, flex: "0 0 auto", paddingTop: 2 } }, String(i + 1).padStart(2, "0")), s)))), /* @__PURE__ */ React.createElement("button", { className: "btn btn-ghost", style: { height: 48, marginTop: 20, fontSize: 15.5 }, onClick: onReset }, t.again));
   }
   Object.assign(window, { Composer });

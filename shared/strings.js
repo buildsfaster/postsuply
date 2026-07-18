@@ -1,4 +1,4 @@
-// Post.Supply v3 — five-language dictionary. Full conversion path translated.
+// Post.Supply v3: five-language dictionary. Full conversion path translated.
 window.PS_LANGS = [['en','English'],['es','Español'],['pt','Português'],['zh','中文'],['ja','日本語']];
 
 window.PS_T = {
