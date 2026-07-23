@@ -1,0 +1,12 @@
+{
+  "name": "postsuply",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Post.Supply landing page, sales desk dashboard, and landed-cost calculator.",
+  "scripts": {
+    "test": "node --test test/",
+    "test:coverage": "node --test --experimental-test-coverage test/",
+    "validate:i18n": "node scripts/validate-i18n.js",
+    "check:em-dash": "bash scripts/check-no-em-dash.sh"
+  }
+}

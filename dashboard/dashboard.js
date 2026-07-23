@@ -119,5 +119,9 @@
       }
     )))))), /* @__PURE__ */ React.createElement("footer", { style: { borderTop: "1px solid var(--rule)", padding: "38px 0 46px" } }, /* @__PURE__ */ React.createElement("div", { className: "wrap", style: { fontSize: 15, color: "var(--ink-2)" } }, /* @__PURE__ */ React.createElement(Wordmark, { size: 16 }), " ", /* @__PURE__ */ React.createElement("span", { style: { marginLeft: 12 } }, "\xA9 2026 \xB7 ", t.foot_corridors))));
   }
-  ReactDOM.createRoot(document.getElementById("root")).render(/* @__PURE__ */ React.createElement(App, null));
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports = { statusLabel, roleLabel, bodyOf, contextOf, contactOf, readLeads, writeLeads, STATUS_ORDER };
+  } else {
+    ReactDOM.createRoot(document.getElementById("root")).render(/* @__PURE__ */ React.createElement(App, null));
+  }
 })();

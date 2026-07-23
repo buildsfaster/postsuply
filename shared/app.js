@@ -161,4 +161,7 @@
     return "en";
   }
   Object.assign(window, { useReveal, Reveal, Wordmark, Stamp, Arrow, Check, Cross, WhatsApp, Paperclip, ModeToggle, LangMenu, saveLead, track, scrollToIntake, initTheme, initLang });
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports = { saveLead, track, scrollToIntake, initTheme, initLang };
+  }
 })();
