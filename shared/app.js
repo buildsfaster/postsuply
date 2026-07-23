@@ -105,6 +105,22 @@
       name
     ))));
   }
+  function readStore(key, fallback) {
+    try {
+      const raw = localStorage.getItem(key);
+      return raw == null ? fallback : JSON.parse(raw);
+    } catch (e) {
+      return fallback;
+    }
+  }
+  function writeStore(key, value) {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
   function saveLead(record) {
     const lead = Object.assign({
       ts: (/* @__PURE__ */ new Date()).toISOString(),
@@ -115,21 +131,15 @@
       mode: document.documentElement.getAttribute("data-theme") || "light",
       status: "new"
     }, record);
-    try {
-      const all = JSON.parse(localStorage.getItem("ps_leads_v3") || "[]");
-      all.push(lead);
-      localStorage.setItem("ps_leads_v3", JSON.stringify(all));
-    } catch (e) {
-    }
+    const all = readStore("ps_leads_v3", []);
+    all.push(lead);
+    writeStore("ps_leads_v3", all);
     return lead;
   }
   function track(event, data) {
-    try {
-      const all = JSON.parse(localStorage.getItem("ps_events_v3") || "[]");
-      all.push({ e: event, d: data != null ? data : null, ts: Date.now() });
-      localStorage.setItem("ps_events_v3", JSON.stringify(all.slice(-600)));
-    } catch (e) {
-    }
+    const all = readStore("ps_events_v3", []);
+    all.push({ e: event, d: data != null ? data : null, ts: Date.now() });
+    writeStore("ps_events_v3", all.slice(-600));
   }
   function scrollToIntake(role) {
     try {
@@ -160,5 +170,29 @@
     }
     return "en";
   }
-  Object.assign(window, { useReveal, Reveal, Wordmark, Stamp, Arrow, Check, Cross, WhatsApp, Paperclip, ModeToggle, LangMenu, saveLead, track, scrollToIntake, initTheme, initLang });
+  function useThemeLang() {
+    const [theme, setTheme] = useState(initTheme);
+    const [lang, setLang] = useState(initLang);
+    useEffect(() => {
+      document.documentElement.setAttribute("data-theme", theme);
+      document.documentElement.style.colorScheme = theme;
+      try {
+        localStorage.setItem("ps3_theme", theme);
+      } catch (e) {
+      }
+    }, [theme]);
+    useEffect(() => {
+      document.documentElement.setAttribute("lang", lang);
+      try {
+        localStorage.setItem("ps3_lang", lang);
+      } catch (e) {
+      }
+      try {
+        window.dispatchEvent(new CustomEvent("ps:langchange", { detail: lang }));
+      } catch (e) {
+      }
+    }, [lang]);
+    return { theme, setTheme, lang, setLang, t: PS_T[lang] || PS_T.en };
+  }
+  Object.assign(window, { useReveal, Reveal, Wordmark, Stamp, Arrow, Check, Cross, WhatsApp, Paperclip, ModeToggle, LangMenu, readStore, writeStore, saveLead, track, scrollToIntake, initTheme, initLang, useThemeLang });
 })();

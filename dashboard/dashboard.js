@@ -27,17 +27,10 @@
     return `${m} \xB7 ${lead.country || "+1"} ${lead.phone || ""}`;
   }
   function readLeads() {
-    try {
-      return JSON.parse(localStorage.getItem(LEADS_KEY) || "[]");
-    } catch (e) {
-      return [];
-    }
+    return readStore(LEADS_KEY, []);
   }
   function writeLeads(list) {
-    try {
-      localStorage.setItem(LEADS_KEY, JSON.stringify(list));
-    } catch (e) {
-    }
+    writeStore(LEADS_KEY, list);
   }
   function LeadRow({ t, lang, lead, expanded, onToggle, onStatusChange, onDelete }) {
     return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("tr", { className: "lead-row", onClick: onToggle }, /* @__PURE__ */ React.createElement("td", { className: "mono lead-contact" }, new Date(lead.ts).toLocaleString(lang)), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("span", { className: "chip" }, roleLabel(t, lead.role))), /* @__PURE__ */ React.createElement("td", { className: "lead-body" }, bodyOf(lead)), /* @__PURE__ */ React.createElement("td", { className: "lead-contact" }, contactOf(lead)), /* @__PURE__ */ React.createElement("td", { className: "lead-contact" }, contextOf(lead)), /* @__PURE__ */ React.createElement("td", { onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("select", { className: "status-select", value: lead.status || "new", onChange: (e) => onStatusChange(lead.ts, e.target.value) }, STATUS_ORDER.map((s) => /* @__PURE__ */ React.createElement("option", { key: s, value: s }, statusLabel(t, s))))), /* @__PURE__ */ React.createElement("td", { onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("button", { className: "btn btn-ghost lead-delete", onClick: () => {
@@ -45,29 +38,12 @@
     } }, t.dash_action_delete))), expanded && /* @__PURE__ */ React.createElement("tr", { className: "lead-detail-row" }, /* @__PURE__ */ React.createElement("td", { colSpan: 7 }, /* @__PURE__ */ React.createElement("div", { className: "lead-detail" }, /* @__PURE__ */ React.createElement("p", null, bodyOf(lead)), /* @__PURE__ */ React.createElement("div", { className: "lead-detail__meta" }, lead.attach && /* @__PURE__ */ React.createElement("span", { className: "tag" }, t.attached), /* @__PURE__ */ React.createElement("span", { className: "tag mono" }, lead.lang), /* @__PURE__ */ React.createElement("span", { className: "tag mono" }, lead.mode), /* @__PURE__ */ React.createElement("span", { className: "tag mono" }, lead.device))))));
   }
   function App() {
-    const [theme, setTheme] = useStateD(initTheme);
-    const [lang, setLang] = useStateD(initLang);
-    const t = PS_T[lang] || PS_T.en;
+    const { theme, setTheme, lang, setLang, t } = useThemeLang();
     const [leads, setLeads] = useStateD(readLeads);
     const [search, setSearch] = useStateD("");
     const [roleFilter, setRoleFilter] = useStateD("");
     const [statusFilter, setStatusFilter] = useStateD("");
     const [expanded, setExpanded] = useStateD(null);
-    useEffectD(() => {
-      document.documentElement.setAttribute("data-theme", theme);
-      document.documentElement.style.colorScheme = theme;
-      try {
-        localStorage.setItem("ps3_theme", theme);
-      } catch (e) {
-      }
-    }, [theme]);
-    useEffectD(() => {
-      document.documentElement.setAttribute("lang", lang);
-      try {
-        localStorage.setItem("ps3_lang", lang);
-      } catch (e) {
-      }
-    }, [lang]);
     useEffectD(() => {
       const refresh = () => setLeads(readLeads());
       function onStorage(e) {

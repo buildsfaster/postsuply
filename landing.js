@@ -350,26 +350,8 @@
   Object.assign(window, { NavV3, HeroV3, IntakeSection, WorkflowV3, RolesV3, LandedV3, RecordsV3, FinalV3, FooterV3, StickyCTA });
 })();
 (() => {
-  const { useState: useStateApp, useEffect: useEffectApp } = React;
   function App() {
-    const [theme, setTheme] = useStateApp(initTheme);
-    const [lang, setLang] = useStateApp(initLang);
-    const t = PS_T[lang] || PS_T.en;
-    useEffectApp(() => {
-      document.documentElement.setAttribute("data-theme", theme);
-      document.documentElement.style.colorScheme = theme;
-      try {
-        localStorage.setItem("ps3_theme", theme);
-      } catch (e) {
-      }
-    }, [theme]);
-    useEffectApp(() => {
-      document.documentElement.setAttribute("lang", lang);
-      try {
-        localStorage.setItem("ps3_lang", lang);
-      } catch (e) {
-      }
-    }, [lang]);
+    const { theme, setTheme, lang, setLang, t } = useThemeLang();
     return /* @__PURE__ */ React.createElement("div", { style: { fontFamily: lang === "zh" ? "'Inter', 'Noto Sans SC', sans-serif" : lang === "ja" ? "'Inter', 'Noto Sans JP', sans-serif" : void 0 } }, /* @__PURE__ */ React.createElement(NavV3, { t, theme, setTheme, lang, setLang }), /* @__PURE__ */ React.createElement(HeroV3, { t }), /* @__PURE__ */ React.createElement(IntakeSection, { t }), /* @__PURE__ */ React.createElement(RolesV3, { t }), /* @__PURE__ */ React.createElement(WorkflowV3, { t }), /* @__PURE__ */ React.createElement(LandedV3, { t }), /* @__PURE__ */ React.createElement(RecordsV3, { t }), /* @__PURE__ */ React.createElement(FinalV3, { t }), /* @__PURE__ */ React.createElement(FooterV3, { t }), /* @__PURE__ */ React.createElement(StickyCTA, { t }));
   }
   ReactDOM.createRoot(document.getElementById("root")).render(/* @__PURE__ */ React.createElement(App, null));
