@@ -40,12 +40,21 @@
     return "https://wa.me/" + number + "?text=" + encodeURIComponent(lines.join("\n"));
   }
   function sendFormspreeFallback(role, lead) {
-    if (!PS_CONFIG.formspreeId) return;
-    fetch("https://formspree.io/f/" + PS_CONFIG.formspreeId, {
+    const id = PS_CONFIG.formspreeId;
+    if (!id || id === "XXXXXXXX") return Promise.resolve(false);
+    return fetch("https://formspree.io/f/" + id, {
       method: "POST",
       headers: { "Accept": "application/json", "Content-Type": "application/json" },
       body: JSON.stringify(Object.assign({ role }, lead))
-    }).catch(function() {
+    }).then(function(res) {
+      if (!res.ok) {
+        logError("sendFormspreeFallback: Formspree responded with HTTP " + res.status + "; lead not delivered", null);
+        return false;
+      }
+      return true;
+    }).catch(function(err) {
+      logError("sendFormspreeFallback: network error posting lead to Formspree", err);
+      return false;
     });
   }
   function useRotatingPlaceholder(examples, active) {
@@ -107,7 +116,10 @@
       const record = Object.assign({ role, attach }, f);
       const lead = saveLead(record);
       sendFormspreeFallback(role, record);
-      window.open(buildWhatsAppUrl(t, role, record), "_blank", "noopener,noreferrer");
+      const waWindow = window.open(buildWhatsAppUrl(t, role, record), "_blank", "noopener,noreferrer");
+      if (!waWindow) {
+        logError("submit: WhatsApp handoff window was blocked (popup blocker); RFQ delivered via Formspree/local store only", null);
+      }
       track("rfq_submitted", role);
       setTimeout(() => {
         setSending(false);
@@ -361,6 +373,7 @@
       try {
         localStorage.setItem("ps3_theme", theme);
       } catch (e) {
+        logError("landing: could not persist theme preference", e);
       }
     }, [theme]);
     useEffectApp(() => {
@@ -368,6 +381,7 @@
       try {
         localStorage.setItem("ps3_lang", lang);
       } catch (e) {
+        logError("landing: could not persist language preference", e);
       }
     }, [lang]);
     return /* @__PURE__ */ React.createElement("div", { style: { fontFamily: lang === "zh" ? "'Inter', 'Noto Sans SC', sans-serif" : lang === "ja" ? "'Inter', 'Noto Sans JP', sans-serif" : void 0 } }, /* @__PURE__ */ React.createElement(NavV3, { t, theme, setTheme, lang, setLang }), /* @__PURE__ */ React.createElement(HeroV3, { t }), /* @__PURE__ */ React.createElement(IntakeSection, { t }), /* @__PURE__ */ React.createElement(RolesV3, { t }), /* @__PURE__ */ React.createElement(WorkflowV3, { t }), /* @__PURE__ */ React.createElement(LandedV3, { t }), /* @__PURE__ */ React.createElement(RecordsV3, { t }), /* @__PURE__ */ React.createElement(FinalV3, { t }), /* @__PURE__ */ React.createElement(FooterV3, { t }), /* @__PURE__ */ React.createElement(StickyCTA, { t }));

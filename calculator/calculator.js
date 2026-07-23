@@ -11,6 +11,7 @@
       const raw = localStorage.getItem(SESSION_KEY);
       return raw ? Object.assign(defaultSession(), JSON.parse(raw)) : defaultSession();
     } catch (e) {
+      logError("calculator: could not load saved session; starting fresh", e);
       return defaultSession();
     }
   }
@@ -21,6 +22,7 @@
       try {
         localStorage.setItem(SESSION_KEY, JSON.stringify(state));
       } catch (e) {
+        logError("calculator: could not persist session; changes will not survive reload", e);
       }
     }
     return {
@@ -91,6 +93,7 @@
       try {
         localStorage.setItem("ps3_theme", theme);
       } catch (e) {
+        logError("calculator: could not persist theme preference", e);
       }
     }, [theme]);
     useEffectC(() => {
@@ -98,6 +101,7 @@
       try {
         localStorage.setItem("ps3_lang", lang);
       } catch (e) {
+        logError("calculator: could not persist language preference", e);
       }
       window.dispatchEvent(new CustomEvent("ps:langchange", { detail: lang }));
     }, [lang]);
