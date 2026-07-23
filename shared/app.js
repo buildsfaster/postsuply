@@ -3,6 +3,11 @@
 
 (() => {
   const { useState, useEffect, useRef } = React;
+  function logError(context, err) {
+    if (typeof console !== "undefined" && console.warn) {
+      console.warn("[post.supply] " + context, err);
+    }
+  }
   function useReveal() {
     const ref = useRef(null);
     useEffect(() => {
@@ -120,6 +125,7 @@
       all.push(lead);
       localStorage.setItem("ps_leads_v3", JSON.stringify(all));
     } catch (e) {
+      logError("saveLead: could not persist lead to localStorage; lead not stored", e);
     }
     return lead;
   }
@@ -129,12 +135,14 @@
       all.push({ e: event, d: data != null ? data : null, ts: Date.now() });
       localStorage.setItem("ps_events_v3", JSON.stringify(all.slice(-600)));
     } catch (e) {
+      logError("track: could not persist analytics event '" + event + "'", e);
     }
   }
   function scrollToIntake(role) {
     try {
       if (role) window.dispatchEvent(new CustomEvent("ps:setrole", { detail: role }));
     } catch (e) {
+      logError("scrollToIntake: could not dispatch ps:setrole event", e);
     }
     const el = document.getElementById("rfq");
     if (!el) return;
@@ -147,6 +155,7 @@
       if (s) return s;
       if (matchMedia("(prefers-color-scheme: dark)").matches) return "dark";
     } catch (e) {
+      logError("initTheme: could not read stored theme preference", e);
     }
     return "light";
   }
@@ -157,8 +166,9 @@
       const n = (navigator.language || "en").toLowerCase();
       for (const p of ["es", "pt", "zh", "ja"]) if (n.startsWith(p)) return p;
     } catch (e) {
+      logError("initLang: could not read stored language preference", e);
     }
     return "en";
   }
-  Object.assign(window, { useReveal, Reveal, Wordmark, Stamp, Arrow, Check, Cross, WhatsApp, Paperclip, ModeToggle, LangMenu, saveLead, track, scrollToIntake, initTheme, initLang });
+  Object.assign(window, { logError, useReveal, Reveal, Wordmark, Stamp, Arrow, Check, Cross, WhatsApp, Paperclip, ModeToggle, LangMenu, saveLead, track, scrollToIntake, initTheme, initLang });
 })();

@@ -30,13 +30,17 @@
     try {
       return JSON.parse(localStorage.getItem(LEADS_KEY) || "[]");
     } catch (e) {
+      logError("dashboard: could not read leads from localStorage", e);
       return [];
     }
   }
   function writeLeads(list) {
     try {
       localStorage.setItem(LEADS_KEY, JSON.stringify(list));
+      return true;
     } catch (e) {
+      logError("dashboard: could not persist leads to localStorage; change not saved", e);
+      return false;
     }
   }
   function LeadRow({ t, lang, lead, expanded, onToggle, onStatusChange, onDelete }) {
@@ -59,6 +63,7 @@
       try {
         localStorage.setItem("ps3_theme", theme);
       } catch (e) {
+        logError("dashboard: could not persist theme preference", e);
       }
     }, [theme]);
     useEffectD(() => {
@@ -66,6 +71,7 @@
       try {
         localStorage.setItem("ps3_lang", lang);
       } catch (e) {
+        logError("dashboard: could not persist language preference", e);
       }
     }, [lang]);
     useEffectD(() => {
@@ -89,13 +95,11 @@
     }, []);
     function onStatusChange(ts, status) {
       const next = leads.map((l) => l.ts === ts ? Object.assign({}, l, { status }) : l);
-      writeLeads(next);
-      setLeads(next);
+      setLeads(writeLeads(next) ? next : readLeads());
     }
     function onDelete(ts) {
       const next = leads.filter((l) => l.ts !== ts);
-      writeLeads(next);
-      setLeads(next);
+      setLeads(writeLeads(next) ? next : readLeads());
     }
     const sorted = leads.slice().sort((a, b) => new Date(b.ts) - new Date(a.ts));
     const visible = sorted.filter((l) => {
