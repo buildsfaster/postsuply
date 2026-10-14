@@ -1,0 +1,7 @@
+# post.supply
+# Search engines and AI assistants are welcome to read this site.
+User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://post.supply/sitemap.xml
