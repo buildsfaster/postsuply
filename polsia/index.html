@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="es" data-lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>post.supply · Mayoreo por contenedor, cotizado FOB o CIF</title>
+<meta name="description" content="Contenedores completos de panel PVC, plywood, postes de pino tratado y puertas. Cotizamos FOB o CIF y te mostramos tu costo final con aranceles e IVU.">
+<meta property="og:title" content="post.supply · Tu costo final, claro">
+<meta property="og:description" content="Contenedores completos de panel PVC, plywood, postes de pino tratado y puertas. Cotización FOB o CIF con tu costo final.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F0EBE5">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9InBvc3Quc3VwcGx5Ij48dGl0bGU+cG9zdC5zdXBwbHk8L3RpdGxlPjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iMTEyIiBmaWxsPSIjMUMxQjE5Ij48L3JlY3Q+PGNpcmNsZSBjeD0iMjU2IiBjeT0iMjU2IiByPSIxMDgiIGZpbGw9IiNGRjVBMUYiPjwvY2lyY2xlPjwvc3ZnPg==">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400&display=swap">
+<style>
+/* post.supply public site v1.1. Tokens from the post.supply Design System. Opens light; dark is the visitor's remembered choice. */
+:root{
+  --ground:#F0EBE5;--band:#E7E3DA;--surface:#F8F7F3;--ink:#1C1B19;--ink-2:#4A4740;--muted:#6B665E;--hair:#DCD6CE;
+  --signal:#FF5A1F;--signal-text:#AD3D0B;--on-signal:#1C1B19;--inv-ground:#1C1B19;--inv-ink:#F0EBE5;--inv-muted:#CFC8BE;
+  --seg1:#1C1B19;--seg2:#4A4740;--seg3:#6B665E;--seg4:#A39C92;--seg5:#CFC8BE;
+  --sans:"Geist","Noto Sans SC","Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --ground:#171716;--band:#1F1E1C;--surface:#232220;--ink:#F0EBE5;--ink-2:#CFC8BE;--muted:#A39C92;--hair:#34322F;
+  --signal-text:#FF7A45;--inv-ground:#0F0F0E;
+  --seg1:#F0EBE5;--seg2:#CFC8BE;--seg3:#A39C92;--seg4:#6B665E;--seg5:#4A4740;color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:18px;line-height:1.6;-webkit-font-smoothing:antialiased}
+[hidden]{display:none!important}
+a{color:inherit}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+@media (min-width:900px){.wrap{padding-left:max(48px,env(safe-area-inset-left,0px));padding-right:max(48px,env(safe-area-inset-right,0px))}}
+.mono{font-family:var(--mono);font-size:13px;letter-spacing:.04em}
+.wm{height:22px;width:auto;display:block;color:var(--ink)}
+:root[data-lang="zh"] h1,:root[data-lang="ja"] h1,:root[data-lang="zh"] h2,:root[data-lang="ja"] h2{letter-spacing:0;line-height:1.25}
+
+/* top bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--ground);border-bottom:1px solid var(--hair)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:21;background:var(--ground)}
+.bar .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:4px 20px;min-height:64px}
+.bar nav{display:flex;gap:22px;margin-left:auto}
+.bar nav a{text-decoration:none;font-size:15px;color:var(--ink-2);white-space:nowrap}
+.bar nav a:hover{color:var(--ink)}
+.tools{display:flex;align-items:center;gap:8px}
+.chips{display:flex;gap:0}
+.chip{font-family:var(--mono);font-size:13px;background:none;border:0;color:var(--muted);min-height:44px;min-width:40px;padding:0 6px;cursor:pointer;border-radius:4px;white-space:nowrap}
+.chip[aria-pressed="true"]{color:var(--ink);text-decoration:underline;text-decoration-color:var(--signal);text-decoration-thickness:2px;text-underline-offset:6px}
+.tbtn{background:none;border:1px solid var(--hair);border-radius:4px;color:var(--ink-2);font:400 13px var(--mono);min-height:36px;min-width:44px;padding:0 12px;cursor:pointer;white-space:nowrap}
+@media (max-width:1020px){.bar nav{display:none}.tools{margin-left:auto}}
+@media (max-width:560px){
+  .bar .wrap{padding-block:6px}
+  .tools{width:100%;margin-left:0;justify-content:space-between;border-top:1px solid var(--hair)}
+  .themewrap{order:-1;margin-left:auto}
+}
+.chip:focus-visible,button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font:600 17px/1 var(--sans);height:52px;padding:0 22px;border-radius:4px;border:1px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn.primary{background:var(--signal);border-color:var(--signal);color:var(--on-signal)}
+.btn.primary:hover{filter:brightness(.96)}
+.btn.small{height:44px;font-size:15px;padding:0 14px;font-weight:500}
+.btn[disabled]{opacity:.55;cursor:progress}
+.link{background:none;border:0;color:var(--ink-2);font:500 15px var(--sans);text-decoration:underline;text-underline-offset:4px;cursor:pointer;min-height:44px;padding:0 4px}
+
+/* hero */
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:64px;padding-block:88px 96px;align-items:start}
+@media (max-width:960px){.hero .wrap{grid-template-columns:minmax(0,1fr);gap:40px;padding-block:44px 64px}}
+.eyebrow{display:flex;align-items:center;gap:10px;color:var(--muted)}
+.eyebrow::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--signal);flex:none}
+h1{font-size:clamp(40px,6vw,80px);line-height:1.03;font-weight:600;letter-spacing:-.035em;margin:24px 0 24px;text-wrap:balance}
+.lead{font-size:clamp(18px,1.9vw,21px);line-height:1.6;color:var(--ink-2);margin:0;max-width:36em}
+.who{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:28px;color:var(--muted)}
+
+/* request panel */
+.panel{background:var(--surface);border:1px solid var(--hair);border-radius:8px;padding:28px;scroll-margin-top:120px}
+@media (max-width:480px){.panel{padding:20px}}
+.panel h2{font-size:26px;line-height:1.2;font-weight:600;letter-spacing:-.02em;margin:0 0 6px}
+.panel p{margin:0 0 18px;color:var(--ink-2);font-size:16px}
+.steps{display:flex;gap:6px;margin-bottom:18px}
+.steps i{height:3px;flex:1;background:var(--hair);border-radius:2px}
+.steps i.on{background:var(--ink)}
+label.f{display:block;font-size:15px;font-weight:500;margin:0 0 6px}
+.field{margin-bottom:16px;min-width:0}
+input[type=tel],input[type=text],input[type=number],select,textarea{width:100%;font:400 18px/1.4 var(--sans);color:var(--ink);background:var(--ground);border:1px solid var(--hair);border-radius:4px;padding:12px 14px;min-height:52px}
+input[type=tel]{font-family:var(--mono);font-size:20px;letter-spacing:.02em}
+input[type=number]{font-family:var(--mono);font-size:17px;font-variant-numeric:tabular-nums}
+textarea{min-height:110px;resize:vertical}
+input:focus,select:focus,textarea:focus{border-color:var(--ink);outline:none}
+.consent{font-size:13px!important;line-height:1.5;color:var(--muted)!important;margin:14px 0 0!important}
+.err{color:var(--signal-text);font-size:15px;margin:10px 0 0}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.row .btn.primary{flex:1 1 200px}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}
+.picked{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:14px;background:var(--ground);border:1px solid var(--hair);border-radius:4px;padding:6px 6px 6px 10px}
+.tag button{background:none;border:0;color:var(--muted);font:400 18px/1 var(--sans);cursor:pointer;min-width:28px;min-height:28px}
+.checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:16px}
+.checks label{display:flex;align-items:center;gap:10px;font-size:15px;line-height:1.3;border:1px solid var(--hair);border-radius:4px;padding:10px 12px;min-height:48px;cursor:pointer;background:var(--ground)}
+.checks input{width:18px;height:18px;flex:none;accent-color:var(--ink)}
+.done h2{display:flex;align-items:center;gap:10px}
+.done h2::before{content:"";width:12px;height:12px;border-radius:50%;background:var(--signal);flex:none}
+.note{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:14px!important}
+
+/* sections */
+section.s{border-top:1px solid var(--hair);scroll-margin-top:64px}
+section.band{background:var(--band)}
+section.s>.wrap{display:grid;grid-template-columns:200px minmax(0,1fr);gap:48px;padding-block:120px}
+@media (max-width:900px){section.s>.wrap{grid-template-columns:minmax(0,1fr);gap:12px;padding-block:72px}}
+.label{color:var(--signal-text);padding-top:12px}
+h2.sec{font-size:clamp(32px,4.6vw,56px);line-height:1.08;font-weight:600;letter-spacing:-.03em;margin:0 0 20px;text-wrap:balance}
+.intro{color:var(--ink-2);font-size:clamp(17px,1.8vw,20px);max-width:38em;margin:0 0 40px}
+h3.sub{font-family:var(--mono);font-size:13px;font-weight:400;letter-spacing:.04em;color:var(--muted);margin:48px 0 0;padding-bottom:12px;border-bottom:1px solid var(--ink)}
+
+/* products */
+.prods{list-style:none;margin:0;padding:0}
+.prod{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 24px;padding:22px 0;border-bottom:1px solid var(--hair);align-items:center}
+.prod h4{font-size:22px;line-height:1.3;font-weight:500;margin:0 0 4px;letter-spacing:-.01em}
+.prod p{margin:0;color:var(--ink-2);font-size:17px;max-width:40em}
+.spec{display:block;margin-top:8px;color:var(--muted)}
+.add[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+@media (max-width:600px){.prod{grid-template-columns:minmax(0,1fr)}.prod .add{justify-self:start}}
+.top3{list-style:none;margin:0;padding:0;border-top:1px solid var(--ink)}
+.top3 .prod{grid-template-columns:56px minmax(0,1fr) auto;padding:32px 0;align-items:start}
+.top3 .rank{font-family:var(--mono);font-size:13px;color:var(--signal-text);padding-top:9px}
+.top3 h4{font-size:clamp(26px,3vw,34px);font-weight:600;letter-spacing:-.02em;margin-bottom:8px}
+.top3 .add{margin-top:4px}
+@media (max-width:600px){.top3 .prod{grid-template-columns:40px minmax(0,1fr)}.top3 .add{grid-column:2;justify-self:start}}
+.origins{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.origins span{font-family:var(--mono);font-size:13px;border:1px solid var(--hair);background:var(--surface);border-radius:4px;padding:6px 10px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:40px}
+@media (max-width:700px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.grid2 .prod{padding:14px 0}
+.grid2 .prod h4{font-size:19px;margin:0}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin:0 0 8px}
+@media (max-width:640px){.stats{grid-template-columns:minmax(0,1fr);gap:20px}}
+.stat{border-top:2px solid var(--ink);padding-top:14px}
+.stat b{display:block;font-size:clamp(44px,6vw,72px);line-height:1;font-weight:600;letter-spacing:-.04em;font-variant-numeric:tabular-nums;margin-bottom:8px}
+.stat span{font-size:15px;color:var(--ink-2)}
+.grades{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 8px}
+.grades span{font-family:var(--mono);font-size:13px;border:1px solid var(--ink);border-radius:4px;padding:6px 10px}
+
+/* calculator */
+.calc{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:40px;align-items:start}
+@media (max-width:1000px){.calc{grid-template-columns:minmax(0,1fr)}}
+.calc fieldset{border:0;margin:0 0 8px;padding:0;min-width:0}
+.calc legend{font-family:var(--mono);font-size:13px;letter-spacing:.04em;color:var(--muted);padding:0 0 10px;margin-bottom:14px;border-bottom:1px solid var(--ink);width:100%}
+.calc .two{gap:0 16px}
+@media (max-width:520px){.calc .two{grid-template-columns:minmax(0,1fr)}}
+.calc label.f{font-size:14px;line-height:1.35;min-height:2.7em;display:flex;align-items:flex-end}
+.seg{display:inline-flex;border:1px solid var(--ink);border-radius:4px;overflow:hidden;margin-bottom:16px}
+.seg button{font:500 15px var(--mono);background:transparent;color:var(--ink);border:0;min-height:44px;min-width:72px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--ground)}
+.hint{font-size:13px;color:var(--muted);margin:-8px 0 16px}
+.result{background:var(--surface);border:1px solid var(--hair);border-radius:8px;padding:28px;position:sticky;top:96px}
+@media (max-width:1000px){.result{position:static}}
+.big{font-size:clamp(40px,5vw,60px);line-height:1;font-weight:600;letter-spacing:-.04em;font-variant-numeric:tabular-nums;margin:8px 0 4px;overflow-wrap:anywhere}
+.unit{display:flex;justify-content:space-between;gap:12px;align-items:baseline;border-top:2px solid var(--ink);padding-top:12px;margin-top:20px}
+.unit b{font-family:var(--mono);font-size:22px;font-weight:400;font-variant-numeric:tabular-nums}
+.bar-st{display:flex;height:12px;border-radius:2px;overflow:hidden;margin:22px 0 14px;background:var(--hair)}
+.bar-st i{display:block;height:100%}
+.legend{list-style:none;margin:0;padding:0}
+.legend li{display:grid;grid-template-columns:12px minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--hair);font-size:15px}
+.legend i{width:12px;height:12px;border-radius:2px}
+.legend b{font-family:var(--mono);font-weight:400;font-variant-numeric:tabular-nums}
+.diff{margin-top:18px;padding-top:14px;border-top:2px solid var(--ink);display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.diff b{font-family:var(--mono);font-size:22px;font-weight:400;font-variant-numeric:tabular-nums}
+.diff.save b{color:var(--signal-text)}
+.disc{font-size:13px;color:var(--muted);margin:18px 0 20px}
+.result .btn{width:100%}
+
+.how{list-style:none;margin:0;padding:0;counter-reset:h}
+.how li{display:grid;grid-template-columns:56px minmax(0,1fr);gap:16px;padding:24px 0;border-top:1px solid var(--hair)}
+.how li:last-child{border-bottom:1px solid var(--hair)}
+.how li::before{counter-increment:h;content:counter(h,decimal-leading-zero);font-family:var(--mono);font-size:13px;color:var(--signal-text);padding-top:6px}
+.how b{display:block;font-size:24px;font-weight:500;line-height:1.3;letter-spacing:-.01em}
+.how span{color:var(--ink-2);font-size:17px}
+.refer{margin-top:40px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 24px;align-items:center;padding:20px 0;border-top:2px solid var(--ink)}
+.refer b{font-size:20px;font-weight:500}
+.refer span{color:var(--ink-2);font-size:17px;grid-column:1}
+.refer .btn{grid-column:2;grid-row:1 / span 2}
+@media (max-width:600px){.refer{grid-template-columns:minmax(0,1fr)}.refer .btn{grid-column:1;grid-row:auto;justify-self:start;margin-top:10px}}
+.statement{font-size:clamp(26px,3.4vw,42px);line-height:1.25;font-weight:500;letter-spacing:-.02em;margin:0;max-width:24em;text-wrap:balance}
+.statement em{font-style:normal;color:var(--signal-text)}
+
+.close{background:var(--inv-ground);color:var(--inv-ink)}
+.close .wrap{padding-block:120px;display:grid;gap:32px}
+@media (max-width:900px){.close .wrap{padding-block:72px}}
+.close h2{font-size:clamp(38px,6vw,84px);line-height:1.05;font-weight:600;letter-spacing:-.035em;margin:0;max-width:14em;text-wrap:balance;color:var(--inv-ink)}
+.close p{color:var(--inv-muted);margin:0;max-width:34em;font-size:20px}
+.close .btn{justify-self:start}
+footer .wrap{display:flex;flex-wrap:wrap;gap:12px 32px;align-items:center;justify-content:space-between;padding-block:36px}
+footer .mono{color:var(--muted)}
+.legal{list-style:none;margin:0;padding:0;max-width:44em}
+.legal li{padding:14px 0;border-bottom:1px solid var(--hair);color:var(--ink-2);font-size:16px}
+.legal li:first-child{border-top:1px solid var(--hair)}
+.legal b{color:var(--ink);font-weight:500}
+#privacidad>.wrap{padding-block:72px}
+
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--ground);border-top:1px solid var(--hair);padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex}
+.dock .btn{flex:1}
+@media (min-width:961px){.dock{display:none!important}}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <a href="#top" aria-label="post.supply"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -760 5738 990" role="img" aria-label="post.supply" class="wm"><path d="M65 150H217V-74C248 -18 302 12 371 12C521 12 597 -109 597 -265C597 -421 521 -542 371 -542C297 -542 242 -510 213 -452L210 -530H65ZM207 -265C207 -351 244 -427 324 -427C403 -427 442 -351 442 -265C442 -178 405 -103 324 -103C244 -103 207 -178 207 -265Z M927 12C1091 12 1199 -97 1199 -265C1199 -433 1091 -542 927 -542C763 -542 655 -433 655 -265C655 -97 763 12 927 12ZM810 -265C810 -367 852 -426 927 -426C1002 -426 1044 -367 1044 -265C1044 -163 1002 -104 927 -104C852 -104 810 -163 810 -265Z M1599 -358 1751 -364C1733 -475 1643 -543 1509 -543C1358 -543 1269 -480 1269 -374C1269 -276 1351 -240 1497 -212C1548 -201 1599 -193 1600 -148C1600 -110 1554 -94 1516 -94C1455 -94 1418 -125 1409 -176L1257 -168C1265 -55 1364 12 1519 12C1655 12 1755 -39 1755 -145C1755 -245 1678 -286 1522 -311C1472 -319 1427 -336 1425 -375C1423 -413 1458 -437 1503 -437C1549 -437 1591 -407 1599 -358Z M1901 -650V-530H1815V-418H1901V-174C1901 -57 1963 0 2079 0H2193V-113H2111C2073 -113 2053 -134 2053 -174V-418H2192V-530H2053V-650Z M2846.0199999999995 -358 2998.0199999999995 -364C2980.0199999999995 -475 2890.0199999999995 -543 2756.0199999999995 -543C2605.0199999999995 -543 2516.0199999999995 -480 2516.0199999999995 -374C2516.0199999999995 -276 2598.0199999999995 -240 2744.0199999999995 -212C2795.0199999999995 -201 2846.0199999999995 -193 2847.0199999999995 -148C2847.0199999999995 -110 2801.0199999999995 -94 2763.0199999999995 -94C2702.0199999999995 -94 2665.0199999999995 -125 2656.0199999999995 -176L2504.0199999999995 -168C2512.0199999999995 -55 2611.0199999999995 12 2766.0199999999995 12C2902.0199999999995 12 3002.0199999999995 -39 3002.0199999999995 -145C3002.0199999999995 -245 2925.0199999999995 -286 2769.0199999999995 -311C2719.0199999999995 -319 2674.0199999999995 -336 2672.0199999999995 -375C2670.0199999999995 -413 2705.0199999999995 -437 2750.0199999999995 -437C2796.0199999999995 -437 2838.0199999999995 -407 2846.0199999999995 -358Z M3564.0199999999995 0V-530H3413.0199999999995V-239C3413.0199999999995 -155 3380.0199999999995 -108 3318.0199999999995 -108C3257.0199999999995 -108 3239.0199999999995 -155 3239.0199999999995 -239V-530H3087.0199999999995V-189C3087.0199999999995 -66 3154.0199999999995 12 3268.0199999999995 12C3336.0199999999995 12 3395.0199999999995 -14 3424.0199999999995 -83L3427.0199999999995 0Z M3675.0199999999995 150H3827.0199999999995V-74C3858.0199999999995 -18 3912.0199999999995 12 3981.0199999999995 12C4131.0199999999995 12 4207.0199999999995 -109 4207.0199999999995 -265C4207.0199999999995 -421 4131.0199999999995 -542 3981.0199999999995 -542C3907.0199999999995 -542 3852.0199999999995 -510 3823.0199999999995 -452L3820.0199999999995 -530H3675.0199999999995ZM3817.0199999999995 -265C3817.0199999999995 -351 3854.0199999999995 -427 3934.0199999999995 -427C4013.0199999999995 -427 4052.0199999999995 -351 4052.0199999999995 -265C4052.0199999999995 -178 4015.0199999999995 -103 3934.0199999999995 -103C3854.0199999999995 -103 3817.0199999999995 -178 3817.0199999999995 -265Z M4291.0199999999995 150H4443.0199999999995V-74C4474.0199999999995 -18 4528.0199999999995 12 4597.0199999999995 12C4747.0199999999995 12 4823.0199999999995 -109 4823.0199999999995 -265C4823.0199999999995 -421 4747.0199999999995 -542 4597.0199999999995 -542C4523.0199999999995 -542 4468.0199999999995 -510 4439.0199999999995 -452L4436.0199999999995 -530H4291.0199999999995ZM4433.0199999999995 -265C4433.0199999999995 -351 4470.0199999999995 -427 4550.0199999999995 -427C4629.0199999999995 -427 4668.0199999999995 -351 4668.0199999999995 -265C4668.0199999999995 -178 4631.0199999999995 -103 4550.0199999999995 -103C4470.0199999999995 -103 4433.0199999999995 -178 4433.0199999999995 -265Z M4907.0199999999995 -710V-148C4907.0199999999995 -53 4967.0199999999995 0 5055.0199999999995 0H5137.0199999999995V-113H5099.0199999999995C5073.0199999999995 -113 5059.0199999999995 -128 5059.0199999999995 -154V-710Z M5171.0199999999995 -530 5362.0199999999995 -27H5404.0199999999995L5391.0199999999995 6C5380.0199999999995 30 5364.0199999999995 40 5332.0199999999995 40H5265.0199999999995V150H5361.0199999999995C5438.0199999999995 150 5484.0199999999995 119 5508.0199999999995 51L5717.0199999999995 -530H5574.0199999999995L5446.0199999999995 -158L5315.0199999999995 -530Z" fill="currentColor"></path><circle cx="2344.0" cy="-92.7" r="95.0" fill="#FF5A1F"></circle></svg></a>
+    <nav aria-label="post.supply">
+      <a href="#productos" data-i="nav_products">Productos</a>
+      <a href="#costo" data-i="nav_calc">Costo final</a>
+      <a href="#puertas" data-i="nav_doors">Puertas</a>
+      <a href="#como" data-i="nav_how">Cómo funciona</a>
+    </nav>
+    <div class="tools">
+      <div class="chips" role="group" aria-label="Idioma · Language">
+        <button class="chip" type="button" data-setlang="en" lang="en">EN</button>
+        <button class="chip" type="button" data-setlang="es" lang="es">ES</button>
+        <button class="chip" type="button" data-setlang="pt" lang="pt">PT</button>
+        <button class="chip" type="button" data-setlang="zh" lang="zh-Hans">中文</button>
+        <button class="chip" type="button" data-setlang="ja" lang="ja">日本語</button>
+      </div>
+      <div class="themewrap"><button class="tbtn" type="button" id="themeBtn" data-i="theme_dark">Oscuro</button></div>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+<div class="hero">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow mono" data-i="eyebrow">post.supply · Mayoreo por contenedor · Puerto Rico</div>
+      <h1 data-i="h1">Una solicitud. Suplido comparable. Tu costo final, claro.</h1>
+      <p class="lead" data-i="lead">Contenedores completos de un solo producto, a precio de mayoreo. Cotizamos FOB o CIF y te mostramos tu costo final con aranceles, IVU e importación, para que compares de verdad. Paneles PVC, plywood, postes de pino tratado y puertas. Cotizar es gratis.</p>
+      <div class="who mono"><span data-i="who_dist">Distribuidores</span><span data-i="who_hw">Ferreterías</span><span data-i="who_imp">Importadores</span></div>
+    </div>
+
+    <div class="panel" id="precios" aria-live="polite">
+      <div class="steps" aria-hidden="true"><i class="on" id="pg1"></i><i id="pg2"></i><i id="pg3"></i></div>
+
+      <form id="f1" novalidate>
+        <h2 data-i="f1_h">Recibe precios</h2>
+        <p data-i="f1_p">Déjanos tu celular. Te contactamos con tu cotización FOB o CIF y tu costo final.</p>
+        <div class="picked" id="picked1" hidden></div>
+        <div class="field">
+          <label class="f" for="phone" data-i="phone_l">Tu celular</label>
+          <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="787 555 0123" required>
+        </div>
+        <div class="row"><button class="btn primary" type="submit" id="b1" data-i="btn_get">Recibe precios</button></div>
+        <p class="err" id="e1" role="alert" hidden></p>
+        <p class="consent"><span data-i="consent">Al enviar tu número aceptas que post.supply te contacte por texto, WhatsApp, llamada o email sobre tu solicitud. Pueden aplicar cargos de mensajes y datos. Responde STOP para no recibir más mensajes.</span> <a href="#privacidad" data-i="consent_link">Aviso de privacidad</a></p>
+      </form>
+
+      <form id="f2" novalidate hidden>
+        <h2 data-i="f2_h">¿Con quién hablamos?</h2>
+        <p data-i="f2_p">Ya recibimos tu número. Esto nos ayuda a cotizar mejor.</p>
+        <div class="field"><label class="f" for="name" data-i="name_l">Nombre</label><input id="name" type="text" autocomplete="given-name"></div>
+        <div class="field"><label class="f" for="company" data-i="company_l">Empresa</label><input id="company" type="text" autocomplete="organization"></div>
+        <div class="field"><label class="f" for="role" data-i="role_l">Tipo de negocio</label>
+          <select id="role">
+            <option value="" data-i="select">Selecciona</option>
+            <option value="distributor" data-i="role_dist">Distribuidor</option>
+            <option value="hardware_store" data-i="role_hw">Ferretería</option>
+            <option value="importer" data-i="role_imp">Importador</option>
+            <option value="contractor" data-i="role_con">Contratista</option>
+            <option value="other" data-i="role_other">Otro</option>
+          </select>
+        </div>
+        <div class="row"><button class="btn primary" type="submit" id="b2" data-i="btn_continue">Continuar</button><button class="link" type="button" id="skip2" data-i="skip">Omitir</button></div>
+        <p class="err" id="e2" role="alert" hidden></p>
+      </form>
+
+      <form id="f3" novalidate hidden>
+        <h2 data-i="f3_h">¿Qué necesitas?</h2>
+        <p data-i="f3_p">Escríbelo como lo dirías. Producto, medida, cantidad y dónde se entrega.</p>
+        <div class="picked" id="picked3" hidden></div>
+        <div class="checks" role="group" data-i-aria="cat_l">
+          <label><input type="checkbox" value="pvc_panel"><span data-i="p_pvc">Panel PVC</span></label>
+          <label><input type="checkbox" value="plywood"><span data-i="p_plywood">Plywood</span></label>
+          <label><input type="checkbox" value="treated_pine_posts"><span data-i="p_posts">Postes de pino tratado</span></label>
+          <label><input type="checkbox" value="doors"><span data-i="nav_doors">Puertas</span></label>
+          <label><input type="checkbox" value="other_panels"><span data-i="cat_more">Otros paneles y tableros</span></label>
+          <label><input type="checkbox" value="other"><span data-i="cat_other">Otro</span></label>
+        </div>
+        <div class="two">
+          <div class="field"><label class="f" for="volume" data-i="vol_l">Volumen</label>
+            <select id="volume">
+              <option value="" data-i="select">Selecciona</option>
+              <option value="lt1" data-i="vol_lt1">Menos de un contenedor</option>
+              <option value="1" data-i="vol_1">1 contenedor</option>
+              <option value="2-4" data-i="vol_2_4">2 a 4 contenedores</option>
+              <option value="5+" data-i="vol_5">5 o más</option>
+              <option value="monthly" data-i="vol_monthly">Recurrente cada mes</option>
+              <option value="unsure" data-i="vol_unsure">Aún no sé</option>
+            </select>
+          </div>
+          <div class="field"><label class="f" for="term" data-i="term_l">Cotización preferida</label>
+            <select id="term">
+              <option value="" data-i="select">Selecciona</option>
+              <option value="FOB">FOB</option>
+              <option value="CIF">CIF</option>
+              <option value="unsure" data-i="vol_unsure">Aún no sé</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label class="f" for="notes" data-i="notes_l">Detalle</label>
+          <textarea id="notes" data-ip="notes_ph" placeholder="Ej.: 1 contenedor de panel PVC blanco, CIF San Juan."></textarea>
+        </div>
+        <div class="row"><button class="btn primary" type="submit" id="b3" data-i="btn_send">Enviar solicitud</button><button class="link" type="button" id="skip3" data-i="skip">Omitir</button></div>
+        <p class="err" id="e3" role="alert" hidden></p>
+      </form>
+
+      <div class="done" id="done" hidden>
+        <h2 data-i="done_h">Recibido.</h2>
+        <p data-i="done_p1">Te contactamos al <b class="mono"></b> con tu cotización.</p>
+        <p data-i="done_p2">¿Tienes una lista, foto o plano? Envíalo a <b>sales@post.supply</b> con tu número.</p>
+        <a class="btn small" id="wa" href="#" target="_blank" rel="noopener" hidden data-i="wa_btn">Escríbenos por WhatsApp</a>
+        <p class="note" id="previewNote" hidden>Preview: nothing was sent.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="s" id="productos">
+  <div class="wrap">
+    <div class="label mono" data-i="s1_label">01 · Productos</div>
+    <div>
+      <h2 class="sec" data-i="s1_h">Contenedores completos. Un producto por contenedor.</h2>
+      <p class="intro" data-i="s1_intro">Nos especializamos en mayoreo: contenedores completos de un solo producto. Medidas, espesores, grado y origen se cotizan con tu solicitud.</p>
+      <ol class="top3">
+        <li class="prod"><span class="rank">01</span><div><h4 data-i="p_pvc">Panel PVC</h4><p data-i="p_pvc_d">Paneles de PVC y sus molduras. Medida, color y acabado se cotizan con tu solicitud.</p></div><button class="btn small add" type="button" data-pid="pvc_panel" data-k="p_pvc" aria-pressed="false"></button></li>
+        <li class="prod"><span class="rank">02</span><div><h4 data-i="p_plywood">Plywood</h4><p data-i="p_plywood_d">Cinco orígenes. Comparamos el suplido y te mostramos el costo final de cada uno.</p>
+          <div class="origins"><span data-i="o_us">Estados Unidos</span><span data-i="o_br">Brasil</span><span data-i="o_cl">Chile</span><span data-i="o_cn">China</span><span data-i="o_id">Indonesia</span></div></div>
+          <button class="btn small add" type="button" data-pid="plywood" data-k="p_plywood" aria-pressed="false"></button></li>
+        <li class="prod"><span class="rank">03</span><div><h4 data-i="p_posts">Postes de pino tratado</h4><p data-i="p_posts_d">Dos acabados: Postes Naturales, sin corteza y con su conicidad natural, y Perfectos Redondos, a un diámetro constante.</p></div><button class="btn small add" type="button" data-pid="treated_pine_posts" data-k="p_posts" aria-pressed="false"></button></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="s band" id="costo">
+  <div class="wrap">
+    <div class="label mono" data-i="calc_label">02 · Costo final</div>
+    <div>
+      <h2 class="sec" data-i="calc_h">Calcula tu costo final, puesto en tu almacén.</h2>
+      <p class="intro" data-i="calc_intro">Pon los números de una cotización y tus costos de importación. Verás el costo total y por unidad, listo para comparar con lo que pagas hoy.</p>
+      <div class="calc">
+        <form id="calcForm" novalidate>
+          <p class="hint" data-i="c_example" style="margin:0 0 20px">Pon los valores de tu cotización y tus costos. No llenamos nada por ti.</p>
+          <fieldset>
+            <legend data-i="g_quote">Cotización</legend>
+            <div class="seg" role="group" data-i-aria="c_term">
+              <button type="button" data-term="FOB" aria-pressed="true">FOB</button>
+              <button type="button" data-term="CIF" aria-pressed="false">CIF</button>
+            </div>
+            <div class="two">
+              <div class="field" id="w_goods"><label class="f" for="c_goods" data-i="c_goods_fob" id="l_goods">Mercancía, valor FOB (USD)</label><input id="c_goods" type="number" inputmode="decimal" min="0" step="any" value=""></div>
+              <div class="field" data-fob><label class="f" for="c_freight" data-i="c_freight">Flete marítimo (USD)</label><input id="c_freight" type="number" inputmode="decimal" min="0" step="any" value=""></div>
+              <div class="field" data-fob><label class="f" for="c_ins" data-i="c_ins">Seguro (% del valor)</label><input id="c_ins" type="number" inputmode="decimal" min="0" step="any" value=""></div>
+              <div class="field" data-cif hidden><label class="f" for="c_fi" data-i="c_fi">Flete y seguro dentro del CIF (USD), si lo sabes</label><input id="c_fi" type="number" inputmode="decimal" min="0" step="any" value=""></div>
+              <div class="field"><label class="f" for="c_units" data-i="c_units">Unidades en el contenedor</label><input id="c_units" type="number" inputmode="numeric" min="1" step="1" value=""></div>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend data-i="g_import">Importación, la pagas tú</legend>
+            <div class="two">
+              <div class="field"><label class="f" for="c_duty" data-i="c_duty">Aranceles totales (% del valor en aduana)</label><input id="c_duty" type="number" inputmode="decimal" min="0" step="any" value=""></div>
+              <div class="field"><label class="f" for="c_tax" data-i="c_tax">IVU o impuesto de uso (%)</label><input id="c_tax" type="number" inputmode="decimal" min="0" step="any" value=""></div>
+            </div>
+            <p class="hint" data-i="c_duty_note">Incluye el arancel base y, si aplican, antidumping, compensatorio y aranceles especiales. En plywood el origen puede cambiarlo todo: lo indicamos en cada cotización.</p>
+            <p class="hint" data-i="c_tax_note">En Puerto Rico el IVU general es 11.5% (10.5% estatal y 1% municipal). Si compras para reventa con certificado de revendedor, usa 0.</p>
+            <div class="two">
+              <div class="field"><label class="f" for="c_broker" data-i="c_broker">Agente aduanal (USD)</label><input id="c_broker" type="number" inputmode="decimal" min="0" step="any" value=""></div>
+              <div class="field"><label class="f" for="c_port" data-i="c_port">Puerto y muelle (USD)</label><input id="c_port" type="number" inputmode="decimal" min="0" step="any" value=""></div>
+              <div class="field"><label class="f" for="c_inland" data-i="c_inland">Transporte terrestre (USD)</label><input id="c_inland" type="number" inputmode="decimal" min="0" step="any" value=""></div>
+              <div class="field"><label class="f" for="c_other" data-i="c_other">Otros costos (USD)</label><input id="c_other" type="number" inputmode="decimal" min="0" step="any" value=""></div>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend data-i="g_compare">Comparar</legend>
+            <div class="field"><label class="f" for="c_current" data-i="c_current">Lo que pagas hoy por unidad (USD), opcional</label><input id="c_current" type="number" inputmode="decimal" min="0" step="any" value=""></div>
+          </fieldset>
+        </form>
+
+        <div class="result" aria-live="polite">
+          <div class="mono" style="color:var(--muted)" data-i="r_total">Costo final estimado</div>
+          <div class="big" id="r_total">$0</div>
+          <p class="hint" id="r_empty" data-i="c_empty" style="margin:8px 0 0">Pon el valor de la mercancía para ver tu estimado.</p>
+          <div id="r_body">
+          <div class="bar-st" id="r_bar" aria-hidden="true"></div>
+          <ul class="legend" id="r_legend"></ul>
+          <div class="unit"><span data-i="r_unit">Por unidad</span><b id="r_unit">$0.00</b></div>
+          <div class="diff" id="r_diff" hidden><span id="r_diff_l"></span><b id="r_diff_v"></b></div>
+          </div>
+          <p class="disc" data-i="c_disclaimer">Estimado para comparar, no es una cotización. Tampoco es asesoría aduanal ni contributiva: confirma las tasas con tu agente aduanal.</p>
+          <a class="btn primary" href="#precios" id="calcCta" data-i="c_cta">Pide una cotización real</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="s" id="puertas">
+  <div class="wrap">
+    <div class="label mono" data-i="s2_label">03 · Puertas</div>
+    <div>
+      <h2 class="sec" data-i="s2_h">Puertas interiores, por contenedor completo.</h2>
+      <p class="intro" data-i="s2_intro">Puerta, contramarco y cerradura en una sola solicitud. Añade lo que te interesa y te cotizamos todo junto.</p>
+      <div class="stats">
+        <div class="stat"><b>65</b><span data-i="stat_bundle">puertas por paca en la mayoría de los modelos</span></div>
+        <div class="stat"><b>970–980</b><span data-i="stat_container">puertas por contenedor</span></div>
+        <div class="stat"><b>24–36"</b><span data-i="stat_width">de ancho, por 80" de alto</span></div>
+      </div>
+
+      <h3 class="sub" data-i="sub_hdf">Moldeadas HDF, con primer blanco</h3>
+      <ul class="prods">
+        <li class="prod"><div><h4 data-i="p_hdf_flush">Puerta HDF lisa moderna</h4><p data-i="p_hdf_flush_d">Varios diseños de ranuras, lista para pintar. Perímetro de madera secada al horno y cepillada, núcleo de poliestireno.</p><span class="spec mono">60–100 cm × 200 cm · 65 <span data-i="u_bundle">/ paca</span></span></div><button class="btn small add" type="button" data-pid="hdf_flush_door" data-k="p_hdf_flush" aria-pressed="false"></button></li>
+        <li class="prod"><div><h4 data-i="p_hdf_2p">Puerta HDF de 2 paneles</h4><p data-i="p_hdf_2p_d">Colonial o moderna. Reforzada y ajustable. Perímetro de madera secada al horno, núcleo de poliestireno.</p><span class="spec mono">60–100 cm × 200 cm · 65 <span data-i="u_bundle">/ paca</span></span></div><button class="btn small add" type="button" data-pid="hdf_2panel_door" data-k="p_hdf_2p" aria-pressed="false"></button></li>
+        <li class="prod"><div><h4 data-i="p_hdf_46">Puerta HDF de 4 o 6 tableros</h4><p data-i="p_hdf_46_d">Caras HDF con textura de vetas de madera. Reforzada y ajustable.</p><span class="spec mono">24–36" × 80" · 65 <span data-i="u_bundle">/ paca</span></span></div><button class="btn small add" type="button" data-pid="hdf_4_6panel_door" data-k="p_hdf_46" aria-pressed="false"></button></li>
+      </ul>
+      <h3 class="sub" data-i="sub_finished">Terminadas y de madera</h3>
+      <ul class="prods">
+        <li class="prod"><div><h4 data-i="p_melamine">Puerta de melamina con marco (combo)</h4><p data-i="p_melamine_d">Laminada en melamina con contramarco y mochetas a juego. Núcleo honeycomb. Incluye marco de 4 plg. Dos colores.</p><span class="spec mono">24–36" × 80" · 65 <span data-i="u_bundle">/ paca</span></span></div><button class="btn small add" type="button" data-pid="melamine_door_combo" data-k="p_melamine" aria-pressed="false"></button></li>
+        <li class="prod"><div><h4 data-i="p_veneer">Puerta enchapada: olivo rojo u okume</h4><p data-i="p_veneer_d">Chapa de madera natural. El okume tiene tono miel. Perímetro de madera secada al horno, núcleo de poliestireno.</p><span class="spec mono">24–36" × 80" · 65 <span data-i="u_bundle">/ paca</span></span></div><button class="btn small add" type="button" data-pid="veneer_door" data-k="p_veneer" aria-pressed="false"></button></li>
+        <li class="prod"><div><h4 data-i="p_pine">Puerta de pino sólido, 6 tableros</h4><p data-i="p_pine_d">Pino natural con nudos, secado al horno y cepillado.</p><span class="spec mono">24–36" × 80" · 50 <span data-i="u_bundle">/ paca</span></span></div><button class="btn small add" type="button" data-pid="solid_pine_6panel_door" data-k="p_pine" aria-pressed="false"></button></li>
+      </ul>
+      <h3 class="sub" data-i="sub_install">Para instalar</h3>
+      <ul class="prods">
+        <li class="prod"><div><h4 data-i="p_casing">Contramarco de pino, juego de 8 piezas</h4><p data-i="p_casing_d">Pino secado al horno y cepillado. 2.10 m de largo, 3.5 cm de espesor.</p><span class="spec mono">4" / 6" · 120 <span data-i="u_sets">juegos / paca</span></span></div><button class="btn small add" type="button" data-pid="pine_casing_set" data-k="p_casing" aria-pressed="false"></button></li>
+        <li class="prod"><div><h4 data-i="p_locks">Cerraduras de bola, manija y pesadas</h4><p data-i="p_locks_d">Bola en cobre, bronce, plateado, dorado o negro. Manija en plata o satín. Pesada en negro o plata. Tres llaves cada una.</p></div><button class="btn small add" type="button" data-pid="locksets" data-k="p_locks" aria-pressed="false"></button></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="s band" id="mas">
+  <div class="wrap">
+    <div class="label mono" data-i="s3_label">04 · Más</div>
+    <div>
+      <h2 class="sec" data-i="s3_h">Más paneles, tableros y pisos.</h2>
+      <p class="intro" data-i="s3_intro">También por contenedor completo. Trabajamos en cuatro grados de calidad.</p>
+      <div class="grades"><span>Green</span><span>Premium</span><span>Standard</span><span>Construction</span></div>
+      <ul class="prods grid2">
+        <li class="prod"><h4 data-i="p_filmface">Plywood film face</h4><button class="btn small add" type="button" data-pid="film_face_plywood" data-k="p_filmface" aria-pressed="false"></button></li>
+        <li class="prod"><h4 data-i="p_mdf">MDF</h4><button class="btn small add" type="button" data-pid="mdf" data-k="p_mdf" aria-pressed="false"></button></li>
+        <li class="prod"><h4 data-i="p_particle">Aglomerado</h4><button class="btn small add" type="button" data-pid="particle_board" data-k="p_particle" aria-pressed="false"></button></li>
+        <li class="prod"><h4 data-i="p_melboard">Tablero de melamina</h4><button class="btn small add" type="button" data-pid="melamine_board" data-k="p_melboard" aria-pressed="false"></button></li>
+        <li class="prod"><h4 data-i="p_osb">OSB</h4><button class="btn small add" type="button" data-pid="osb" data-k="p_osb" aria-pressed="false"></button></li>
+        <li class="prod"><h4 data-i="p_slatwall">Slatwall</h4><button class="btn small add" type="button" data-pid="slatwall" data-k="p_slatwall" aria-pressed="false"></button></li>
+        <li class="prod"><h4 data-i="p_paulownia">Paulownia</h4><button class="btn small add" type="button" data-pid="paulownia" data-k="p_paulownia" aria-pressed="false"></button></li>
+        <li class="prod"><h4 data-i="p_moulding">Molduras</h4><button class="btn small add" type="button" data-pid="moulding" data-k="p_moulding" aria-pressed="false"></button></li>
+        <li class="prod"><h4 data-i="p_doorskin">Caras de puerta (door skin)</h4><button class="btn small add" type="button" data-pid="door_skin" data-k="p_doorskin" aria-pressed="false"></button></li>
+        <li class="prod"><h4 data-i="p_woodfloor">Piso de madera</h4><button class="btn small add" type="button" data-pid="wood_flooring" data-k="p_woodfloor" aria-pressed="false"></button></li>
+        <li class="prod"><h4 data-i="p_wpc">Decking WPC</h4><button class="btn small add" type="button" data-pid="wpc_decking" data-k="p_wpc" aria-pressed="false"></button></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="s" id="como">
+  <div class="wrap">
+    <div class="label mono" data-i="s4_label">05 · Cómo</div>
+    <div>
+      <h2 class="sec" data-i="s4_h">De un mensaje a un contenedor en tu puerto.</h2>
+      <ol class="how">
+        <li><div><b data-i="how1_t">Envía lo que necesitas</b><span data-i="how1_d">Por esta página, texto, WhatsApp o email. Una lista, una foto o tus propias palabras.</span></div></li>
+        <li><div><b data-i="how2_t">Recibe una cotización FOB o CIF</b><span data-i="how2_d">Suplido comparable, con un estimado de aranceles e IVU y el tiempo de llegada. Nada se mueve sin tu aprobación.</span></div></li>
+        <li><div><b data-i="how3_t">Calcula tu costo final y aprueba</b><span data-i="how3_d">Suma tu agente aduanal, cargos de puerto y transporte terrestre. Nosotros coordinamos producción, documentos y embarque.</span></div></li>
+      </ol>
+      <div class="refer"><b data-i="ref_h">¿Compras menos de un contenedor?</b><span data-i="ref_p">Déjanos tu solicitud igual. Te conectamos con un distribuidor local que te atienda.</span><a class="btn small" href="#precios" data-track="referral_cta" data-i="btn_get">Recibe precios</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="s band" id="pagas">
+  <div class="wrap">
+    <div class="label mono" data-i="s5_label">06 · Qué pagas</div>
+    <div><p class="statement" data-i="statement">Cotizar y comparar es gratis. Te cotizamos FOB o CIF y te adelantamos aranceles e IVU. <em>Tú pagas la importación directamente</em>, con el costo final claro antes de aprobar.</p></div>
+  </div>
+</section>
+
+<section class="close">
+  <div class="wrap">
+    <h2 data-i="close_h">Tu próximo contenedor empieza con un mensaje.</h2>
+    <p data-i="close_p">Déjanos tu celular y lo que necesitas. Te contactamos con tu cotización y tu costo final.</p>
+    <a class="btn primary" href="#precios" data-track="close_cta" data-i="btn_get">Recibe precios</a>
+  </div>
+</section>
+
+<section class="s" id="privacidad">
+  <div class="wrap">
+    <div class="label mono" data-i="pv_h">Aviso de privacidad</div>
+    <div>
+      <ul class="legal">
+        <li data-i="pv_1"><b>Qué recogemos.</b> Tu celular y, si nos los das, tu nombre, empresa, tipo de negocio, productos, volumen y el detalle de tu solicitud, además de la página y el enlace por el que llegaste.</li><li data-i="pv_2"><b>Para qué.</b> Para responder tu solicitud, cotizarte y dar seguimiento a tu compra.</li><li data-i="pv_3"><b>Quién lo ve.</b> El equipo de ventas de post.supply y los proveedores que alojan este sitio y nuestro email. Si tu compra es menor a un contenedor y nos das el visto bueno, compartimos tu solicitud con un distribuidor local para que te atienda. No vendemos tus datos.</li><li data-i="pv_4"><b>Mensajes.</b> Te contactamos solo sobre tu solicitud. No enviamos promociones sin tu permiso por separado. Responde STOP para dejar de recibir textos.</li><li data-i="pv_5"><b>Tus datos.</b> Para verlos, corregirlos o borrarlos, escribe a sales@post.supply.</li>
+      </ul>
+      <p class="mono" style="color:var(--muted);margin-top:16px" data-i="pv_date">Actualizado: octubre de 2026</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="mono">post.supply · <span data-i="loc_pr">Puerto Rico</span> · <span class="email"></span></span>
+    <a class="mono" href="#privacidad" style="color:var(--muted)" data-i="consent_link">Aviso de privacidad</a>
+  </div>
+</footer>
+
+<div class="dock" id="dock" hidden><a class="btn primary" href="#precios" id="dockBtn"></a></div>
+
+<script>
+(function(){
+  "use strict";
+  // ---- Settings. Empty values hide the matching element. ----
+  var CONFIG = {
+    leadEndpoint: "/api/lead",
+    eventEndpoint: "/api/event",
+    email: "sales@post.supply",
+    whatsapp: ""   // desk WhatsApp, digits with country code
+  };
+  var D = {"nav_products":["Productos","Products","Produtos","产品","製品"],"nav_doors":["Puertas","Doors","Portas","门","ドア"],"nav_how":["Cómo funciona","How it works","Como funciona","流程","ご利用の流れ"],"theme_dark":["Oscuro","Dark","Escuro","深色","ダーク"],"theme_light":["Claro","Light","Claro","浅色","ライト"],"eyebrow":["post.supply · Mayoreo por contenedor · Puerto Rico","post.supply · Wholesale by the container · Puerto Rico","post.supply · Atacado por contêiner · Porto Rico","post.supply · 整柜批发 · 波多黎各","post.supply · コンテナ単位の卸売 · プエルトリコ"],"h1":["Una solicitud. Suplido comparable. Tu costo final, claro.","One request. Comparable supply. Your full landed cost.","Um pedido. Fornecimento comparável. Seu custo final, claro.","一次询价。可比货源。完整到岸成本，一目了然。","依頼はひとつ。比較できる調達先。最終着地コストが一目でわかる。"],"lead":["Contenedores completos de un solo producto, a precio de mayoreo. Cotizamos FOB o CIF y te mostramos tu costo final con aranceles, IVU e importación, para que compares de verdad. Paneles PVC, plywood, postes de pino tratado y puertas. Cotizar es gratis.","Full containers of one product, at wholesale. We quote FOB or CIF and show your full landed cost with duties, sales tax and import costs, so you can compare for real. PVC panels, plywood, treated pine posts and doors. Quoting is free.","Contêineres completos de um único produto, no atacado. Cotamos FOB ou CIF e mostramos seu custo final com impostos de importação, imposto sobre vendas e custos de importação, para você comparar de verdade. Painéis de PVC, compensado, postes de pinus tratado e portas. A cotação é gratuita.","单一产品整柜批发。我们按 FOB 或 CIF 报价，并列出含关税、销售税和进口费用的完整到岸成本，方便您真实比较。PVC墙板、胶合板、防腐松木桩和门。报价免费。","単一製品をコンテナ単位で卸売。FOBまたはCIFでお見積りし、関税、売上税、輸入諸費用を含む最終着地コストをお示しするので、正確に比較できます。PVCパネル、合板、防腐処理パイン杭、ドア。お見積りは無料です。"],"who_dist":["Distribuidores","Distributors","Distribuidores","分销商","販売代理店"],"who_hw":["Ferreterías","Hardware stores","Lojas de materiais","五金建材店","建材店"],"who_imp":["Importadores","Importers","Importadores","进口商","輸入業者"],"who_con":["Contratistas","Contractors","Empreiteiros","承包商","建設業者"],"f1_h":["Recibe precios","Get prices","Receba preços","获取报价","価格を受け取る"],"f1_p":["Déjanos tu celular. Te contactamos con tu cotización FOB o CIF y tu costo final.","Leave your mobile number. We contact you with your FOB or CIF quote and your full landed cost.","Deixe seu celular. Entramos em contato com sua cotação FOB ou CIF e seu custo final.","留下您的手机号码，我们会联系您，提供 FOB 或 CIF 报价及完整到岸成本。","携帯番号をご入力ください。FOBまたはCIFのお見積りと最終着地コストをご連絡します。"],"phone_l":["Tu celular","Your mobile number","Seu celular","手机号码","携帯電話番号"],"btn_get":["Recibe precios","Get prices","Receba preços","获取报价","価格を受け取る"],"consent":["Al enviar tu número aceptas que post.supply te contacte por texto, WhatsApp, llamada o email sobre tu solicitud. Pueden aplicar cargos de mensajes y datos. Responde STOP para no recibir más mensajes.","By sending your number you agree that post.supply may contact you by text, WhatsApp, call or email about your request. Message and data rates may apply. Reply STOP to opt out.","Ao enviar seu número, você concorda que a post.supply entre em contato por mensagem de texto, WhatsApp, ligação ou e-mail sobre o seu pedido. Podem ser cobradas tarifas de mensagens e dados. Responda STOP para não receber mais mensagens.","提交号码即表示您同意 post.supply 就您的询价通过短信、WhatsApp、电话或电子邮件与您联系。可能产生短信和流量费用。回复 STOP 即可退订。","番号を送信すると、post.supply がご依頼についてSMS、WhatsApp、電話、メールでご連絡することに同意したものとみなされます。通信料がかかる場合があります。配信停止は STOP と返信してください。"],"f2_h":["¿Con quién hablamos?","Who should we ask for?","Com quem falamos?","我们该联系谁？","ご担当者様について"],"f2_p":["Ya recibimos tu número. Esto nos ayuda a cotizar mejor.","We have your number. This helps us quote better.","Já recebemos seu número. Isso nos ajuda a cotar melhor.","我们已收到您的号码。以下信息有助于更准确地报价。","番号を受け付けました。以下はより正確なお見積りに役立ちます。"],"name_l":["Nombre","First name","Nome","姓名","お名前"],"company_l":["Empresa","Company","Empresa","公司","会社名"],"role_l":["Tipo de negocio","Type of business","Tipo de negócio","业务类型","業種"],"select":["Selecciona","Select","Selecione","请选择","選択してください"],"role_hw":["Ferretería","Hardware store","Loja de materiais de construção","五金建材店","建材店"],"role_dist":["Distribuidor","Distributor","Distribuidor","分销商","販売代理店"],"role_imp":["Importador","Importer","Importador","进口商","輸入業者"],"role_con":["Contratista","Contractor","Empreiteiro","承包商","建設業者"],"role_other":["Otro","Other","Outro","其他","その他"],"btn_continue":["Continuar","Continue","Continuar","继续","次へ"],"skip":["Omitir","Skip","Pular","跳过","スキップ"],"f3_h":["¿Qué necesitas?","What do you need?","Do que você precisa?","您需要什么？","ご希望の製品"],"f3_p":["Escríbelo como lo dirías. Producto, medida, cantidad y dónde se entrega.","Write it the way you would say it. Product, size, quantity and where it goes.","Escreva do seu jeito. Produto, medida, quantidade e local de entrega.","用您习惯的方式写：产品、规格、数量和送货地点。","製品、サイズ、数量、納品先をそのままご記入ください。"],"vol_l":["Volumen","Volume","Volume","采购量","数量"],"vol_1":["1 contenedor","1 container","1 contêiner","1个货柜","コンテナ1本"],"vol_2_4":["2 a 4 contenedores","2 to 4 containers","2 a 4 contêineres","2至4个货柜","コンテナ2〜4本"],"vol_5":["5 o más","5 or more","5 ou mais","5个及以上","5本以上"],"vol_monthly":["Recurrente cada mes","Recurring monthly","Recorrente todo mês","每月定期","毎月の定期発注"],"vol_unsure":["Aún no sé","Not sure yet","Ainda não sei","尚未确定","未定"],"cat_l":["Productos","Products","Produtos","产品","製品"],"cat_more":["Otros paneles y tableros","Other panels and boards","Outros painéis e chapas","其他板材","その他のパネル・ボード"],"cat_other":["Otro","Other","Outro","其他","その他"],"notes_l":["Detalle","Details","Detalhes","详细需求","詳細"],"notes_ph":["Ej.: 1 contenedor de panel PVC blanco, CIF San Juan.","E.g. 1 container of white PVC panel, CIF San Juan.","Ex.: 1 contêiner de painel de PVC branco, CIF San Juan.","例如：1个货柜白色PVC墙板，CIF San Juan。","例：白のPVCパネル コンテナ1本、CIF San Juan。"],"btn_send":["Enviar solicitud","Send request","Enviar pedido","提交询价","依頼を送信"],"done_h":["Recibido.","Received.","Recebido.","已收到。","受け付けました。"],"done_p1":["Te contactamos al <b class=\"mono\">{phone}</b> con tu cotización.","We will contact you at <b class=\"mono\">{phone}</b> with your quote.","Entraremos em contato pelo <b class=\"mono\">{phone}</b> com sua cotação.","我们将通过 <b class=\"mono\">{phone}</b> 联系您并提供报价。","<b class=\"mono\">{phone}</b> 宛にお見積りをご連絡します。"],"done_p2":["¿Tienes una lista, foto o plano? Envíalo a <b>{email}</b> con tu número.","Have a list, photo or drawing? Send it to <b>{email}</b> with your number.","Tem uma lista, foto ou planta? Envie para <b>{email}</b> com seu número.","有清单、照片或图纸？请连同您的号码发送至 <b>{email}</b>。","リスト、写真、図面があれば、番号を添えて <b>{email}</b> までお送りください。"],"wa_btn":["Escríbenos por WhatsApp","Message us on WhatsApp","Fale conosco no WhatsApp","通过 WhatsApp 联系我们","WhatsAppで連絡する"],"js_add":["Añadir","Add","Adicionar","加入","追加"],"js_added":["Añadido","Added","Adicionado","已加入","追加済み"],"js_remove":["Quitar","Remove","Remover","移除","削除"],"js_item1":["1 producto","1 item","1 produto","1 项","1 点"],"js_itemn":["{n} productos","{n} items","{n} produtos","{n} 项","{n} 点"],"js_badphone":["Revisa el número. Usa 10 dígitos, por ejemplo 787 555 0123.","Check the number. Use 10 digits, for example 787 555 0123.","Confira o número. Use 10 dígitos, por exemplo 787 555 0123.","请检查号码。请输入10位数字，例如 787 555 0123。","番号をご確認ください。10桁で入力してください（例：787 555 0123）。"],"js_fail":["No pudimos enviarlo. Inténtalo otra vez o escribe a {email}.","We could not send it. Try again or write to {email}.","Não conseguimos enviar. Tente de novo ou escreva para {email}.","发送失败。请重试，或发送邮件至 {email}。","送信できませんでした。もう一度お試しいただくか、{email} までご連絡ください。"],"js_sending":["Enviando…","Sending…","Enviando…","发送中…","送信中…"],"s1_label":["01 · Productos","01 · Products","01 · Produtos","01 · 产品","01 · 製品"],"s1_h":["Contenedores completos. Un producto por contenedor.","Full containers. One product per container.","Contêineres completos. Um produto por contêiner.","整柜供货。每柜一种产品。","コンテナ単位。1本に1製品。"],"s1_intro":["Nos especializamos en mayoreo: contenedores completos de un solo producto. Medidas, espesores, grado y origen se cotizan con tu solicitud.","We specialize in wholesale: full containers of a single product. Sizes, thicknesses, grade and origin are quoted with your request.","Somos especialistas em atacado: contêineres completos de um único produto. Medidas, espessuras, classe e origem são cotadas com o seu pedido.","我们专注批发：单一产品整柜供货。规格、厚度、等级和产地随询价一并报价。","専門はコンテナ単位の卸売です。サイズ、厚さ、グレード、原産地はご依頼に応じてお見積りします。"],"p_pvc":["Panel PVC","PVC panel","Painel de PVC","PVC墙板","PVCパネル"],"p_pvc_d":["Paneles de PVC y sus molduras. Medida, color y acabado se cotizan con tu solicitud.","PVC panels and matching trim. Size, color and finish are quoted with your request.","Painéis de PVC e acabamentos. Medida, cor e acabamento são cotados com o seu pedido.","PVC墙板及配套线条。尺寸、颜色和表面效果随询价报价。","PVCパネルと専用モールディング。サイズ、色、仕上げはご依頼に応じてお見積りします。"],"p_plywood":["Plywood","Plywood","Compensado","胶合板","合板"],"p_plywood_d":["Cinco orígenes. Comparamos el suplido y te mostramos el costo final de cada uno.","Five origins. We compare supply and show the full landed cost of each.","Cinco origens. Comparamos o fornecimento e mostramos o custo final de cada uma.","五个产地。我们比较货源，并列出每个产地的完整到岸成本。","原産地は5か国。調達先を比較し、それぞれの最終着地コストをお示しします。"],"o_us":["Estados Unidos","United States","Estados Unidos","美国","アメリカ"],"o_br":["Brasil","Brazil","Brasil","巴西","ブラジル"],"o_cl":["Chile","Chile","Chile","智利","チリ"],"o_cn":["China","China","China","中国","中国"],"o_id":["Indonesia","Indonesia","Indonésia","印度尼西亚","インドネシア"],"p_posts":["Postes de pino tratado","Treated pine posts","Postes de pinus tratado","防腐松木桩","防腐処理パイン杭"],"p_posts_d":["Dos acabados: Postes Naturales, sin corteza y con su conicidad natural, y Perfectos Redondos, a un diámetro constante.","Two finishes: Postes Naturales, bark-free with their natural taper, and Perfectos Redondos, rounded to a constant diameter.","Dois acabamentos: Postes Naturales, sem casca e com a conicidade natural, e Perfectos Redondos, com diâmetro constante.","两种规格：Postes Naturales（去皮，保留自然锥度）和 Perfectos Redondos（车圆，直径一致）。","仕上げは2種類：Postes Naturales（皮むき、自然なテーパー）と Perfectos Redondos（一定径に丸加工）。"],"s2_label":["03 · Puertas","03 · Doors","03 · Portas","03 · 门","03 · ドア"],"s2_h":["Puertas interiores, por contenedor completo.","Interior doors, by the full container.","Portas internas, por contêiner completo.","室内门，整柜供货。","室内ドア、コンテナ単位。"],"s2_intro":["Puerta, contramarco y cerradura en una sola solicitud. Añade lo que te interesa y te cotizamos todo junto.","Door, casing and lockset in one request. Add what you need and we quote it together.","Porta, guarnição e fechadura em um só pedido. Adicione o que precisa e cotamos tudo junto.","门、门套和门锁一次询价。加入所需产品，我们合并报价。","ドア、枠、錠前をひとつのご依頼で。必要な製品を追加すれば、まとめてお見積りします。"],"stat_bundle":["puertas por paca en la mayoría de los modelos","doors per bundle on most models","portas por fardo na maioria dos modelos","大多数型号每捆门数","多くのモデルで1束あたりの枚数"],"stat_container":["puertas por contenedor","doors per container","portas por contêiner","每柜门数","コンテナ1本あたりの枚数"],"stat_width":["de ancho, por 80\" de alto","wide, by 80\" high","de largura, por 80\" de altura","宽度，高 80 英寸","幅、高さ80インチ"],"sub_hdf":["Moldeadas HDF, con primer blanco","Molded HDF, white primed","HDF moldada, com primer branco","HDF 模压门，白色底漆","HDF成形ドア、白プライマー"],"p_hdf_flush":["Puerta HDF lisa moderna","Modern flush HDF door","Porta HDF lisa moderna","现代 HDF 平板门","モダンHDFフラッシュドア"],"p_hdf_flush_d":["Varios diseños de ranuras, lista para pintar. Perímetro de madera secada al horno y cepillada, núcleo de poliestireno.","Several grooved designs, ready to paint. Kiln-dried planed wood frame, polystyrene core.","Vários desenhos de frisos, pronta para pintar. Quadro de madeira seca em estufa e aplainada, miolo de poliestireno.","多种开槽造型，可直接上漆。窑干刨光木框，聚苯乙烯芯。","溝デザイン数種、塗装仕上げ可能。人工乾燥・プレーナー仕上げの木枠、ポリスチレン芯。"],"p_hdf_2p":["Puerta HDF de 2 paneles","2-panel HDF door","Porta HDF de 2 almofadas","HDF 两格门","HDF 2パネルドア"],"p_hdf_2p_d":["Colonial o moderna. Reforzada y ajustable. Perímetro de madera secada al horno, núcleo de poliestireno.","Colonial or modern. Reinforced and trimmable. Kiln-dried wood frame, polystyrene core.","Colonial ou moderna. Reforçada e ajustável. Quadro de madeira seca em estufa, miolo de poliestireno.","殖民风或现代款。加固，可裁切调整。窑干木框，聚苯乙烯芯。","コロニアルまたはモダン。補強済みで調整可能。人工乾燥木枠、ポリスチレン芯。"],"p_hdf_46":["Puerta HDF de 4 o 6 tableros","4 or 6-panel HDF door","Porta HDF de 4 ou 6 almofadas","HDF 四格或六格门","HDF 4・6パネルドア"],"p_hdf_46_d":["Caras HDF con textura de vetas de madera. Reforzada y ajustable.","HDF faces with wood-grain texture. Reinforced and trimmable.","Faces HDF com textura de veios de madeira. Reforçada e ajustável.","HDF 门皮带木纹肌理。加固，可裁切调整。","木目調テクスチャーのHDF面材。補強済みで調整可能。"],"sub_finished":["Terminadas y de madera","Finished and wood","Acabadas e de madeira","成品门与实木门","仕上げ済み・木製"],"p_melamine":["Puerta de melamina con marco (combo)","Melamine door combo, with frame","Porta de melamina com batente (kit)","三聚氰胺门套装（含门框）","メラミンドア 枠付きセット"],"p_melamine_d":["Laminada en melamina con contramarco y mochetas a juego. Núcleo honeycomb. Incluye marco de 4 plg. Dos colores.","Melamine finish with matching casing and jambs. Honeycomb core. Includes 4 in. frame. Two colors.","Acabamento em melamina com guarnição e batentes combinando. Miolo colmeia. Inclui batente de 4 pol. Duas cores.","三聚氰胺饰面，配套门套和门框。蜂窝芯。含 4 英寸门框。两种颜色。","メラミン仕上げ、同色の額縁と枠付き。ハニカム芯。4インチ枠付属。2色。"],"p_veneer":["Puerta enchapada: olivo rojo u okume","Veneer door: red olive or okoume","Porta folheada: oliva vermelha ou okoumé","贴皮门：红橄榄木或奥克榄","突板ドア：レッドオリーブまたはオクメ"],"p_veneer_d":["Chapa de madera natural. El okume tiene tono miel. Perímetro de madera secada al horno, núcleo de poliestireno.","Natural wood veneer. Okoume has a soft honey tone. Kiln-dried wood frame, polystyrene core.","Folha de madeira natural. O okoumé tem tom de mel. Quadro de madeira seca em estufa, miolo de poliestireno.","天然木皮。奥克榄呈柔和的蜂蜜色。窑干木框，聚苯乙烯芯。","天然木の突板。オクメは柔らかなハニー色。人工乾燥木枠、ポリスチレン芯。"],"p_pine":["Puerta de pino sólido, 6 tableros","Solid pine 6-panel door","Porta de pinus maciço, 6 almofadas","实心松木六格门","無垢パイン6パネルドア"],"p_pine_d":["Pino natural con nudos, secado al horno y cepillado.","Natural knotty pine, kiln dried and planed.","Pinus natural com nós, seco em estufa e aplainado.","天然带节松木，窑干刨光。","節ありの天然パイン、人工乾燥・プレーナー仕上げ。"],"sub_install":["Para instalar","To install","Para instalar","安装配件","取付部材"],"p_casing":["Contramarco de pino, juego de 8 piezas","Pine casing, 8-piece set","Guarnição de pinus, jogo de 8 peças","松木门套，8 件套","パイン額縁 8本セット"],"p_casing_d":["Pino secado al horno y cepillado. 2.10 m de largo, 3.5 cm de espesor.","Kiln-dried planed pine. 2.10 m long, 3.5 cm thick.","Pinus seco em estufa e aplainado. 2,10 m de comprimento, 3,5 cm de espessura.","窑干刨光松木。长 2.10 米，厚 3.5 厘米。","人工乾燥・プレーナー仕上げのパイン。長さ2.10 m、厚さ3.5 cm。"],"p_locks":["Cerraduras de bola, manija y pesadas","Knob, lever and heavy-duty locksets","Fechaduras de bola, alavanca e reforçadas","球形锁、执手锁和重型锁","握り玉錠、レバー錠、重量錠"],"p_locks_d":["Bola en cobre, bronce, plateado, dorado o negro. Manija en plata o satín. Pesada en negro o plata. Tres llaves cada una.","Knob in copper, bronze, silver, gold or black. Lever in silver or satin. Heavy-duty in black or silver. Three keys each.","Bola em cobre, bronze, prata, dourado ou preto. Alavanca em prata ou acetinado. Reforçada em preto ou prata. Três chaves cada.","球形锁：铜色、古铜、银色、金色或黑色。执手锁：银色或缎面。重型锁：黑色或银色。每把配三把钥匙。","握り玉：カッパー、ブロンズ、シルバー、ゴールド、ブラック。レバー：シルバー、サテン。重量錠：ブラック、シルバー。各キー3本付き。"],"u_bundle":["/ paca","/ bundle","/ fardo","/ 捆","/ 束"],"u_sets":["juegos / paca","sets / bundle","jogos / fardo","套 / 捆","セット / 束"],"s3_label":["04 · Más","04 · More","04 · Mais","04 · 更多","04 · その他"],"s3_h":["Más paneles, tableros y pisos.","More panels, boards and flooring.","Mais painéis, chapas e pisos.","更多板材与地板。","その他のパネル、ボード、床材。"],"s3_intro":["También por contenedor completo. Trabajamos en cuatro grados de calidad.","Also by the full container. We work in four quality grades.","Também por contêiner completo. Trabalhamos com quatro classes de qualidade.","同样整柜供货。我们提供四个质量等级。","こちらもコンテナ単位です。品質グレードは4段階です。"],"p_filmface":["Plywood film face","Film face plywood","Compensado plastificado","覆膜胶合板","フィルム合板"],"p_mdf":["MDF","MDF","MDF","MDF","MDF"],"p_particle":["Aglomerado","Particle board","Aglomerado","刨花板","パーティクルボード"],"p_melboard":["Tablero de melamina","Melamine board","Chapa melamínica","三聚氰胺板","メラミン化粧板"],"p_osb":["OSB","OSB","OSB","OSB","OSB"],"p_slatwall":["Slatwall","Slatwall","Painel canaletado","槽板","スラットウォール"],"p_paulownia":["Paulownia","Paulownia","Paulownia","泡桐木","桐材"],"p_moulding":["Molduras","Moulding","Molduras","线条","モールディング"],"p_doorskin":["Caras de puerta (door skin)","Door skin","Capa de porta (door skin)","门皮","ドアスキン"],"p_woodfloor":["Piso de madera","Wood flooring","Piso de madeira","木地板","木質フローリング"],"p_wpc":["Decking WPC","WPC decking","Deck WPC","WPC 地板","WPCデッキ"],"s4_label":["05 · Cómo","05 · How","05 · Como","05 · 流程","05 · 流れ"],"s4_h":["De un mensaje a un contenedor en tu puerto.","From a message to a container at your port.","De uma mensagem a um contêiner no seu porto.","从一条消息，到货柜抵达您的港口。","メッセージひとつから、港に届くコンテナまで。"],"how1_t":["Envía lo que necesitas","Send what you need","Envie o que precisa","发送需求","ご依頼を送る"],"how1_d":["Por esta página, texto, WhatsApp o email. Una lista, una foto o tus propias palabras.","Through this page, text, WhatsApp or email. A list, a photo or your own words.","Por esta página, mensagem de texto, WhatsApp ou e-mail. Uma lista, uma foto ou suas próprias palavras.","通过本页面、短信、WhatsApp 或电子邮件。清单、照片或直接描述均可。","このページ、SMS、WhatsApp、メールで。リスト、写真、ご自身の言葉で構いません。"],"how2_t":["Recibe una cotización FOB o CIF","Get an FOB or CIF quote","Receba uma cotação FOB ou CIF","获得 FOB 或 CIF 报价","FOB・CIFのお見積りを受け取る"],"how2_d":["Suplido comparable, con un estimado de aranceles e IVU y el tiempo de llegada. Nada se mueve sin tu aprobación.","Comparable supply, with estimated duties and sales tax and the arrival time. Nothing moves until you approve.","Fornecimento comparável, com estimativa de impostos de importação e sobre vendas e o prazo de chegada. Nada é enviado sem a sua aprovação.","可比货源，附关税和销售税估算及到货时间。未经您确认，不会发货。","比較できる調達先、関税・売上税の見込みと到着時期付き。ご承認なしに出荷はしません。"],"how3_t":["Calcula tu costo final y aprueba","See your landed cost and approve","Veja seu custo final e aprove","核算到岸成本并确认","着地コストを確認して承認"],"how3_d":["Suma tu agente aduanal, cargos de puerto y transporte terrestre. Nosotros coordinamos producción, documentos y embarque.","Add your customs broker, port charges and inland freight. We coordinate production, documents and shipping.","Some seu despachante, taxas portuárias e frete interno. Nós coordenamos produção, documentos e embarque.","加上您的报关行、港口费用和内陆运输。我们负责协调生产、单证和装运。","通関業者、港湾費用、国内輸送を加算。生産、書類、船積みは当社が手配します。"],"s5_label":["06 · Qué pagas","06 · What you pay","06 · O que você paga","06 · 费用","06 · お支払い"],"statement":["Cotizar y comparar es gratis. Te cotizamos FOB o CIF y te adelantamos aranceles e IVU. <em>Tú pagas la importación directamente</em>, con el costo final claro antes de aprobar.","Quoting and comparing are free. We quote FOB or CIF and estimate duties and sales tax for you. <em>You pay import costs directly</em>, with the full landed cost clear before you approve.","Cotar e comparar é gratuito. Cotamos FOB ou CIF e estimamos os impostos de importação e sobre vendas. <em>Você paga a importação diretamente</em>, com o custo final claro antes de aprovar.","报价和比较免费。我们按 FOB 或 CIF 报价，并预估关税和销售税。<em>进口费用由您直接支付</em>，确认前即可看清完整到岸成本。","見積りと比較は無料。FOBまたはCIFでお見積りし、関税と売上税の見込みもお伝えします。<em>輸入費用はお客様が直接お支払い</em>。承認前に最終着地コストが明確になります。"],"close_h":["Tu próximo contenedor empieza con un mensaje.","Your next container starts with a message.","Seu próximo contêiner começa com uma mensagem.","下一个货柜，从一条消息开始。","次のコンテナは、メッセージひとつから。"],"close_p":["Déjanos tu celular y lo que necesitas. Te contactamos con tu cotización y tu costo final.","Leave your number and what you need. We contact you with your quote and your landed cost.","Deixe seu número e o que precisa. Entramos em contato com sua cotação e seu custo final.","留下您的号码和需求，我们会联系您，提供报价和到岸成本。","番号とご希望の製品をお知らせください。お見積りと着地コストをご連絡します。"],"loc_pr":["Puerto Rico","Puerto Rico","Porto Rico","波多黎各","プエルトリコ"],"calc_label":["02 · Costo final","02 · Landed cost","02 · Custo final","02 · 到岸成本","02 · 着地コスト"],"nav_calc":["Costo final","Landed cost","Custo final","到岸成本","着地コスト"],"calc_h":["Calcula tu costo final, puesto en tu almacén.","Work out your full landed cost.","Calcule seu custo final, posto no seu armazém.","计算您的完整到岸成本。","最終着地コストを計算する。"],"calc_intro":["Pon los números de una cotización y tus costos de importación. Verás el costo total y por unidad, listo para comparar con lo que pagas hoy.","Enter a quote and your import costs. You get the total and per-unit cost, ready to compare with what you pay today.","Informe os valores de uma cotação e seus custos de importação. Você verá o custo total e por unidade, pronto para comparar com o que paga hoje.","输入报价和您的进口费用，即可得到总成本和单位成本，方便与您目前的采购价比较。","見積り額と輸入費用を入力すると、総額と単価が表示され、現在の仕入れ値と比較できます。"],"c_example":["Pon los valores de tu cotización y tus costos. No llenamos nada por ti.","Enter the values from your quote and your costs. Nothing is pre-filled.","Informe os valores da sua cotação e seus custos. Nada vem preenchido.","请填写您报价中的数值和您的费用。我们不预填任何数据。","お手元の見積り額と費用を入力してください。事前入力はありません。"],"c_term":["Término de la cotización","Quote term","Termo da cotação","报价条款","見積り条件"],"c_goods_fob":["Mercancía, valor FOB (USD)","Goods value, FOB (USD)","Mercadoria, valor FOB (USD)","货物 FOB 价值（美元）","商品価格 FOB（USD）"],"c_goods_cif":["Precio CIF (USD)","CIF price (USD)","Preço CIF (USD)","CIF 价格（美元）","CIF価格（USD）"],"c_freight":["Flete marítimo (USD)","Ocean freight (USD)","Frete marítimo (USD)","海运费（美元）","海上運賃（USD）"],"c_ins":["Seguro (% del valor)","Insurance (% of value)","Seguro (% do valor)","保险（货值 %）","保険（価格の%）"],"c_fi":["Flete y seguro dentro del CIF (USD), si lo sabes","Freight and insurance inside the CIF price (USD), if known","Frete e seguro incluídos no CIF (USD), se souber","CIF 价格中包含的运费和保险（美元，如已知）","CIF価格に含まれる運賃・保険（USD、わかる場合）"],"c_duty":["Aranceles totales (% del valor en aduana)","Total duties (% of customs value)","Impostos de importação totais (% do valor aduaneiro)","关税合计（完税价格 %）","関税合計（課税価格の%）"],"c_tax":["IVU o impuesto de uso (%)","Sales and use tax (%)","Imposto sobre vendas e uso (%)","销售及使用税（%）","売上・使用税（%）"],"c_tax_note":["En Puerto Rico el IVU general es 11.5% (10.5% estatal y 1% municipal). Si compras para reventa con certificado de revendedor, usa 0.","Puerto Rico's general sales and use tax (IVU) is 11.5% (10.5% state, 1% municipal). If you buy for resale with a reseller certificate, use 0.","O imposto geral sobre vendas e uso de Porto Rico (IVU) é 11,5% (10,5% estadual e 1% municipal). Se você compra para revenda com certificado de revendedor, use 0.","波多黎各一般销售及使用税（IVU）为 11.5%（州 10.5%，市 1%）。如持有转售证明用于转售，请填 0。","プエルトリコの一般売上・使用税（IVU）は11.5%（州10.5%、市1%）です。再販業者証明書で再販用に購入する場合は0を入力してください。"],"c_broker":["Agente aduanal (USD)","Customs broker (USD)","Despachante aduaneiro (USD)","报关行费用（美元）","通関業者（USD）"],"c_port":["Puerto y muelle (USD)","Port and terminal (USD)","Porto e terminal (USD)","港口及码头费（美元）","港湾・ターミナル（USD）"],"c_inland":["Transporte terrestre (USD)","Inland freight (USD)","Frete interno (USD)","内陆运输（美元）","国内輸送（USD）"],"c_other":["Otros costos (USD)","Other costs (USD)","Outros custos (USD)","其他费用（美元）","その他費用（USD）"],"c_units":["Unidades en el contenedor","Units in the container","Unidades no contêiner","每柜件数","コンテナ内の数量"],"c_current":["Lo que pagas hoy por unidad (USD), opcional","What you pay today per unit (USD), optional","Quanto você paga hoje por unidade (USD), opcional","您目前的单位采购价（美元，选填）","現在の単価（USD、任意）"],"g_quote":["Cotización","Quote","Cotação","报价","見積り"],"g_import":["Importación, la pagas tú","Import costs, paid by you","Importação, paga por você","进口费用（由您支付）","輸入費用（お客様負担）"],"g_compare":["Comparar","Compare","Comparar","比较","比較"],"r_total":["Costo final estimado","Estimated landed cost","Custo final estimado","预估到岸成本","最終着地コスト（概算）"],"r_unit":["Por unidad","Per unit","Por unidade","单位成本","単価"],"r_save":["Ahorro estimado por contenedor","Estimated saving per container","Economia estimada por contêiner","每柜预计节省","コンテナ1本あたりの削減見込み"],"r_more":["Más caro por contenedor","More expensive per container","Mais caro por contêiner","每柜高出","コンテナ1本あたりの割高額"],"b_goods":["Mercancía","Goods","Mercadoria","货物","商品"],"b_fi":["Flete y seguro","Freight and insurance","Frete e seguro","运费和保险","運賃・保険"],"b_duty":["Arancel","Duty","Imposto de importação","关税","関税"],"b_tax":["IVU","Sales tax","Imposto sobre vendas","销售税","売上税"],"b_local":["Aduana, puerto y transporte","Broker, port and inland","Despachante, porto e frete interno","报关、港口和内陆运输","通関・港湾・国内輸送"],"c_disclaimer":["Estimado para comparar, no es una cotización. Tampoco es asesoría aduanal ni contributiva: confirma las tasas con tu agente aduanal.","An estimate for comparison, not a quotation. Not customs or tax advice either: confirm rates with your customs broker.","Estimativa para comparação, não é uma cotação. Também não é assessoria aduaneira nem tributária: confirme as taxas com seu despachante.","仅为比较用的估算，并非报价，也不构成报关或税务建议。请向您的报关行确认税率。","比較用の概算であり、見積りではありません。通関・税務の助言でもありません。税率は通関業者にご確認ください。"],"c_cta":["Pide una cotización real","Get a real quote","Peça uma cotação real","获取正式报价","正式な見積りを依頼"],"term_l":["Cotización preferida","Preferred quote","Cotação preferida","首选报价条款","希望する見積り条件"],"c_empty":["Pon el valor de la mercancía para ver tu estimado.","Enter the goods value to see your estimate.","Informe o valor da mercadoria para ver sua estimativa.","请输入货物价值以查看估算。","商品価格を入力すると概算が表示されます。"],"c_duty_note":["Incluye el arancel base y, si aplican, antidumping, compensatorio y aranceles especiales. En plywood el origen puede cambiarlo todo: lo indicamos en cada cotización.","Include the base duty and, where they apply, antidumping, countervailing and special tariffs. For plywood, origin can change everything: we state it in every quote.","Inclua o imposto base e, quando aplicáveis, antidumping, compensatório e tarifas especiais. No compensado, a origem pode mudar tudo: indicamos em cada cotação.","请包括基本关税，以及适用时的反倾销税、反补贴税和特别关税。胶合板的产地可能完全改变成本，我们会在每份报价中注明。","基本関税に加え、該当する場合はアンチダンピング税、相殺関税、特別関税を含めてください。合板は原産地で大きく変わるため、見積りごとに明記します。"],"consent_link":["Aviso de privacidad","Privacy notice","Aviso de privacidade","隐私声明","プライバシー通知"],"pv_h":["Aviso de privacidad","Privacy notice","Aviso de privacidade","隐私声明","プライバシー通知"],"pv_1":["<b>Qué recogemos.</b> Tu celular y, si nos los das, tu nombre, empresa, tipo de negocio, productos, volumen y el detalle de tu solicitud, además de la página y el enlace por el que llegaste.","<b>What we collect.</b> Your mobile number and, if you give them, your name, company, type of business, products, volume and request details, plus the page and link you arrived from.","<b>O que coletamos.</b> Seu celular e, se você informar, seu nome, empresa, tipo de negócio, produtos, volume e detalhes do pedido, além da página e do link pelo qual chegou.","<b>我们收集的信息。</b>您的手机号码；如您提供，还包括姓名、公司、业务类型、产品、采购量和询价详情，以及您访问的页面和来源链接。","<b>収集する情報。</b>携帯番号、およびご提供いただいた場合はお名前、会社名、業種、製品、数量、ご依頼の詳細。あわせて閲覧ページと流入元のリンク。"],"pv_2":["<b>Para qué.</b> Para responder tu solicitud, cotizarte y dar seguimiento a tu compra.","<b>Why.</b> To answer your request, quote you and follow up on your purchase.","<b>Para quê.</b> Para responder ao seu pedido, cotar e acompanhar sua compra.","<b>用途。</b>用于回复您的询价、向您报价并跟进您的采购。","<b>利用目的。</b>ご依頼への回答、お見積り、ご購入のフォローのため。"],"pv_3":["<b>Quién lo ve.</b> El equipo de ventas de post.supply y los proveedores que alojan este sitio y nuestro email. Si tu compra es menor a un contenedor y nos das el visto bueno, compartimos tu solicitud con un distribuidor local para que te atienda. No vendemos tus datos.","<b>Who sees it.</b> The post.supply sales team and the providers that host this site and our email. If your purchase is smaller than a container and you agree, we share your request with a local distributor who can serve you. We do not sell your data.","<b>Quem vê.</b> A equipe de vendas da post.supply e os provedores que hospedam este site e nosso e-mail. Se sua compra for menor que um contêiner e você concordar, compartilhamos seu pedido com um distribuidor local que possa atendê-lo. Não vendemos seus dados.","<b>谁能看到。</b>post.supply 销售团队，以及为本网站和我们的电子邮件提供托管的服务商。如您的采购量不足一个货柜且您同意，我们会将您的询价转给可以服务您的本地分销商。我们不出售您的数据。","<b>閲覧者。</b>post.supply の営業チームと、本サイトおよびメールをホストする事業者。ご購入がコンテナ1本未満で、ご同意いただいた場合は、対応可能な地元の販売代理店にご依頼内容を共有します。データを販売することはありません。"],"pv_4":["<b>Mensajes.</b> Te contactamos solo sobre tu solicitud. No enviamos promociones sin tu permiso por separado. Responde STOP para dejar de recibir textos.","<b>Messages.</b> We contact you only about your request. No promotions without your separate permission. Reply STOP to stop texts.","<b>Mensagens.</b> Entramos em contato apenas sobre o seu pedido. Não enviamos promoções sem sua permissão separada. Responda STOP para parar de receber mensagens.","<b>消息。</b>我们只会就您的询价与您联系。未经您另行同意，不发送促销信息。回复 STOP 即可停止接收短信。","<b>メッセージ。</b>ご依頼に関するご連絡のみ行います。別途の同意なしに販促メッセージは送りません。SMSの停止は STOP と返信してください。"],"pv_5":["<b>Tus datos.</b> Para verlos, corregirlos o borrarlos, escribe a {email}.","<b>Your data.</b> To see, correct or delete it, write to {email}.","<b>Seus dados.</b> Para ver, corrigir ou excluir, escreva para {email}.","<b>您的数据。</b>如需查看、更正或删除，请发送邮件至 {email}。","<b>お客様のデータ。</b>確認、訂正、削除は {email} までご連絡ください。"],"pv_date":["Actualizado: octubre de 2026","Updated: October 2026","Atualizado: outubro de 2026","更新：2026年10月","更新：2026年10月"],"vol_lt1":["Menos de un contenedor","Less than a container","Menos de um contêiner","不足一个货柜","コンテナ1本未満"],"ref_h":["¿Compras menos de un contenedor?","Buying less than a container?","Compra menos de um contêiner?","采购量不足一个货柜？","コンテナ1本未満のご購入ですか？"],"ref_p":["Déjanos tu solicitud igual. Te conectamos con un distribuidor local que te atienda.","Send your request anyway. We connect you with a local distributor who can serve you.","Envie seu pedido mesmo assim. Conectamos você a um distribuidor local que possa atendê-lo.","照样提交询价。我们会为您对接可以服务您的本地分销商。","そのままご依頼ください。対応可能な地元の販売代理店をご紹介します。"]};
+  var LANGS = ["es","en","pt","zh","ja"], HTML_LANG = {es:"es",en:"en",pt:"pt",zh:"zh-Hans",ja:"ja"};
+  var LOCALE = {es:"es-PR",en:"en-US",pt:"pt-BR",zh:"zh-CN",ja:"ja-JP"};
+  var PREVIEW = /claude/.test(location.hostname);
+  var root = document.documentElement;
+  var $=function(s,r){return (r||document).querySelector(s)}, $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+  function uid(){try{return crypto.randomUUID()}catch(e){return "l"+Date.now().toString(36)+Math.random().toString(36).slice(2,10)}}
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+
+  var lang = "es";
+  function t(key,vars){
+    var row=D[key];if(!row)return key;var s=row[LANGS.indexOf(lang)]||row[1]||row[0];
+    s=s.replace(/\{email\}/g,esc(CONFIG.email));
+    if(vars)for(var k in vars)s=s.split("{"+k+"}").join(vars[k]);
+    return s;
+  }
+
+  // ---- source tag: post.supply/?s=ferreteria-rivera ----
+  var qs=new URLSearchParams(location.search);
+  var src=qs.get("s")||qs.get("src")||qs.get("utm_source")||"";
+  if(src)store("ps_src",src.slice(0,80));
+  var source=store("ps_src")||"direct";
+
+  // ---- lead state ----
+  var lead={id:store("ps_lead")||uid(),token:store("ps_tok")||"",phone:"",products:[]};
+  store("ps_lead",lead.id);
+  var byPid={};$$(".add").forEach(function(b){byPid[b.getAttribute("data-pid")]=b});
+
+  // ---- CJK fonts load only when needed ----
+  var cjkLoaded={};
+  function loadCJK(l){
+    var fam={zh:"Noto+Sans+SC",ja:"Noto+Sans+JP"}[l];if(!fam||cjkLoaded[l])return;cjkLoaded[l]=1;
+    var k=document.createElement("link");k.rel="stylesheet";k.href="https://fonts.googleapis.com/css2?family="+fam+":wght@400;500;600&display=swap";document.head.appendChild(k);
+  }
+
+  function apply(){
+    $$("[data-i]").forEach(function(el){
+      var k=el.getAttribute("data-i");
+      if(k==="theme_dark")k=root.getAttribute("data-theme")==="dark"?"theme_light":"theme_dark";
+      el.innerHTML=t(k,{phone:esc(lead.phone)});
+    });
+    $$("[data-ip]").forEach(function(el){el.setAttribute("placeholder",t(el.getAttribute("data-ip")))});
+    $$("[data-i-aria]").forEach(function(el){el.setAttribute("aria-label",t(el.getAttribute("data-i-aria")))});
+    $$(".email").forEach(function(el){el.textContent=CONFIG.email});
+    $("#l_goods").innerHTML=t(term==="CIF"?"c_goods_cif":"c_goods_fob");
+    renderPicked();calc();
+  }
+  function setLang(l){
+    if(LANGS.indexOf(l)<0)l="es";lang=l;
+    root.setAttribute("data-lang",l);root.setAttribute("lang",HTML_LANG[l]);store("ps_lang",l);loadCJK(l);
+    $$("[data-setlang]").forEach(function(b){b.setAttribute("aria-pressed",String(b.getAttribute("data-setlang")===l))});
+    apply();
+  }
+  $$("[data-setlang]").forEach(function(b){b.addEventListener("click",function(){setLang(b.getAttribute("data-setlang"));track("lang",{lang:lang})})});
+
+  // ---- theme: opens light, dark is a remembered choice ----
+  function setTheme(m){
+    root.setAttribute("data-theme",m);
+    var tc=document.querySelector('meta[name="theme-color"]');if(tc)tc.setAttribute("content",m==="dark"?"#171716":"#F0EBE5");
+    var b=$("#themeBtn");b.innerHTML=t(m==="dark"?"theme_light":"theme_dark");b.setAttribute("aria-pressed",String(m==="dark"));
+  }
+  $("#themeBtn").addEventListener("click",function(){var m=root.getAttribute("data-theme")==="dark"?"light":"dark";setTheme(m);store("ps_theme",m);track("theme",{theme:m})});
+
+  // ---- events ----
+  function track(name,data){
+    if(PREVIEW)return;
+    try{var body=JSON.stringify({event:name,data:data||{},lead_id:lead.id,source:source,lang:lang,path:location.pathname,ts:new Date().toISOString()});
+      if(navigator.sendBeacon)navigator.sendBeacon(CONFIG.eventEndpoint,new Blob([body],{type:"application/json"}));
+      else fetch(CONFIG.eventEndpoint,{method:"POST",headers:{"Content-Type":"application/json"},body:body,keepalive:true}).catch(function(){});
+    }catch(e){}
+  }
+
+  // ---- product picks ----
+  var formVisible=false,sent=false;
+  function renderPicked(){
+    $$(".add").forEach(function(b){var on=lead.products.indexOf(b.getAttribute("data-pid"))>-1;b.setAttribute("aria-pressed",String(on));b.textContent=t(on?"js_added":"js_add")});
+    ["#picked1","#picked3"].forEach(function(sel){
+      var box=$(sel);box.innerHTML="";
+      lead.products.forEach(function(pid){
+        var b=byPid[pid];if(!b)return;
+        var tag=document.createElement("span");tag.className="tag";tag.textContent=t(b.getAttribute("data-k"));
+        var x=document.createElement("button");x.type="button";x.setAttribute("aria-label",t("js_remove"));x.textContent="×";
+        x.addEventListener("click",function(){toggle(pid)});tag.appendChild(x);box.appendChild(tag);
+      });
+      box.hidden=lead.products.length===0;
+    });
+    var n=lead.products.length;
+    $("#dockBtn").textContent=t("btn_get")+(n?" · "+(n===1?t("js_item1"):t("js_itemn",{n:n})):"");
+    $("#dock").hidden=!(n>0&&!formVisible&&!sent);
+  }
+  function toggle(pid){var i=lead.products.indexOf(pid);if(i>-1)lead.products.splice(i,1);else{lead.products.push(pid);track("add_product",{pid:pid})}renderPicked()}
+  $$(".add").forEach(function(b){b.addEventListener("click",function(){toggle(b.getAttribute("data-pid"))})});
+  if("IntersectionObserver" in window)new IntersectionObserver(function(es){formVisible=es[0].isIntersecting;renderPicked()},{threshold:.2}).observe($("#precios"));
+
+  // ---- landed-cost calculator ----
+  var term="FOB", calcUsed=false;
+  function num(id){var v=parseFloat(($("#"+id).value||"").replace(",","."));return isFinite(v)&&v>0?v:0}
+  function money(v,d){try{return new Intl.NumberFormat(LOCALE[lang],{style:"currency",currency:"USD",minimumFractionDigits:d,maximumFractionDigits:d}).format(v)}catch(e){return "$"+v.toFixed(d)}}
+  function calc(){
+    var goods=num("c_goods"),units=Math.max(1,Math.round(num("c_units"))||1);
+    var cif,customs;
+    if(term==="FOB"){var f=num("c_freight");var ins=(goods+f)*num("c_ins")/100;cif=goods+f+ins;customs=goods}
+    else{cif=goods;customs=Math.max(0,goods-num("c_fi"))}
+    var duty=customs*num("c_duty")/100;
+    var tax=(cif+duty)*num("c_tax")/100;
+    var local=num("c_broker")+num("c_port")+num("c_inland")+num("c_other");
+    var total=cif+duty+tax+local;
+    var empty=goods<=0;$("#r_empty").hidden=!empty;$("#r_body").hidden=empty;
+    $("#r_total").textContent=money(total,0);
+    $("#r_unit").textContent=money(total/units,2);
+    var parts=[["b_goods",customs,"--seg1"],["b_fi",cif-customs,"--seg2"],["b_duty",duty,"--seg3"],["b_tax",tax,"--seg4"],["b_local",local,"--seg5"]];
+    var bar=$("#r_bar"),leg=$("#r_legend");bar.innerHTML="";leg.innerHTML="";
+    parts.forEach(function(p){
+      var w=total>0?p[1]/total*100:0;
+      var i=document.createElement("i");i.style.width=w+"%";i.style.background="var("+p[2]+")";bar.appendChild(i);
+      var li=document.createElement("li");li.innerHTML='<i style="background:var('+p[2]+')"></i><span>'+t(p[0])+'</span><b>'+money(p[1],0)+'</b>';leg.appendChild(li);
+    });
+    var cur=num("c_current"),diffBox=$("#r_diff");
+    if(cur>0&&total>0){
+      var d=cur*units-total;diffBox.hidden=false;diffBox.classList.toggle("save",d>=0);
+      $("#r_diff_l").textContent=t(d>=0?"r_save":"r_more");$("#r_diff_v").textContent=money(Math.abs(d),0);
+    }else diffBox.hidden=true;
+  }
+  $$("#calcForm input").forEach(function(inp){inp.addEventListener("input",function(){calc();if(!calcUsed){calcUsed=true;track("calc_used")}})});
+  $$("[data-term]").forEach(function(b){b.addEventListener("click",function(){
+    term=b.getAttribute("data-term");
+    $$("[data-term]").forEach(function(x){x.setAttribute("aria-pressed",String(x===b))});
+    $$("[data-fob]").forEach(function(e){e.hidden=term!=="FOB"});$$("[data-cif]").forEach(function(e){e.hidden=term!=="CIF"});
+    $("#l_goods").innerHTML=t(term==="CIF"?"c_goods_cif":"c_goods_fob");calc();
+  })});
+  $("#calcCta").addEventListener("click",function(){track("calc_cta",{term:term});var s=$("#term");if(s&&!s.value)s.value=term});
+
+  // ---- request form ----
+  function payload(step,extra){
+    var p={lead_id:lead.id,lead_token:lead.token||undefined,step:step,phone:lead.phone,
+      products:lead.products.map(function(pid){var b=byPid[pid];return {id:pid,name:b?D[b.getAttribute("data-k")][1]:pid}}),
+      source:source,lang:lang,page:location.href.split("#")[0],referrer:document.referrer||"",submitted_at:new Date().toISOString()};
+    for(var k in extra)p[k]=extra[k];return p;
+  }
+  function send(step,extra){
+    if(PREVIEW)return new Promise(function(r){setTimeout(r,350)});
+    return fetch(CONFIG.leadEndpoint,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload(step,extra))})
+      .then(function(r){
+        if(!r.ok)throw new Error("http "+r.status);
+        return r.json().catch(function(){return {}}).then(function(j){
+          if(j&&typeof j.lead_token==="string"&&j.lead_token){lead.token=j.lead_token;store("ps_tok",j.lead_token)}
+        });
+      });
+  }
+  function busy(btn,on){btn.disabled=on;btn.innerHTML=on?t("js_sending"):t(btn.getAttribute("data-i"))}
+  function showErr(id,msg){var e=$(id);e.innerHTML=msg||"";e.hidden=!msg}
+  var panes=["#f1","#f2","#f3","#done"];
+  function go(n){
+    panes.forEach(function(s,i){$(s).hidden=(i+1)!==n});
+    ["#pg1","#pg2","#pg3"].forEach(function(s,i){$(s).classList.toggle("on",i<n)});
+    var first=$(panes[n-1]).querySelector("input,select,textarea");
+    if(first&&n>1){try{first.focus({preventScroll:true})}catch(e){}}
+  }
+  function normPhone(v){
+    var d=(v||"").replace(/\D/g,"");
+    if(/^\s*\+/.test(v)&&d.length>=8)return "+"+d;
+    if(d.length===10)return "+1"+d;
+    if(d.length===11&&d[0]==="1")return "+"+d;
+    return "";
+  }
+  $("#f1").addEventListener("submit",function(ev){
+    ev.preventDefault();showErr("#e1","");
+    var ph=normPhone($("#phone").value);
+    if(!ph){showErr("#e1",t("js_badphone"));$("#phone").focus();return}
+    lead.phone=ph;var b=$("#b1");busy(b,true);
+    send(1,{}).then(function(){busy(b,false);track("lead_step1");go(2);apply()}).catch(function(){busy(b,false);showErr("#e1",t("js_fail"))});
+  });
+  function step2(skip){
+    showErr("#e2","");
+    if(skip){track("lead_step2_skip");go(3);return}
+    var b=$("#b2");busy(b,true);
+    send(2,{name:$("#name").value.trim(),company:$("#company").value.trim(),business_type:$("#role").value})
+      .then(function(){busy(b,false);track("lead_step2");go(3)}).catch(function(){busy(b,false);showErr("#e2",t("js_fail"))});
+  }
+  $("#f2").addEventListener("submit",function(ev){ev.preventDefault();step2(false)});
+  $("#skip2").addEventListener("click",function(){step2(true)});
+  function finish(){
+    sent=true;store("ps_lead",uid());store("ps_tok","");
+    if(CONFIG.whatsapp){var wa=$("#wa");wa.href="https://wa.me/"+CONFIG.whatsapp.replace(/\D/g,"");wa.hidden=false}
+    $("#previewNote").hidden=!PREVIEW;go(4);apply();
+  }
+  function step3(skip){
+    showErr("#e3","");
+    if(skip){track("lead_step3_skip");finish();return}
+    var b=$("#b3");busy(b,true);
+    send(3,{categories:$$("#f3 .checks input:checked").map(function(i){return i.value}),volume:$("#volume").value,quote_term:$("#term").value,notes:$("#notes").value.trim()})
+      .then(function(){busy(b,false);track("lead_step3");finish()}).catch(function(){busy(b,false);showErr("#e3",t("js_fail"))});
+  }
+  $("#f3").addEventListener("submit",function(ev){ev.preventDefault();step3(false)});
+  $("#skip3").addEventListener("click",function(){step3(true)});
+  $$("[data-track]").forEach(function(a){a.addEventListener("click",function(){track(a.getAttribute("data-track"))})});
+  $("#dockBtn").addEventListener("click",function(){track("dock_cta")});
+
+  // ---- start ----
+  var nl=(navigator.language||"").toLowerCase().slice(0,2);
+  var start=qs.get("lang")||store("ps_lang")||(["pt","zh","ja"].indexOf(nl)>-1?nl:"es");
+  setTheme(store("ps_theme")==="dark"?"dark":"light");
+  setLang(start);
+  track("page_view",{referrer:document.referrer||""});
+})();
+</script>
+</body>
+</html>
